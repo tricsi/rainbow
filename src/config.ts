@@ -11,6 +11,9 @@ export const COLOR_WHITE = [1, 1, 1, 1]
 export const COLOR_DARK = [0.3, 0.3, 0.3]
 export const COLOR_LIGHT = [0.7, 0.7, 0.7]
 export const COLOR_RED = [1, 0, 0]
+export const COLOR_YELLOW = [1, 1, 0]
+export const COLOR_BLUE = [0, 1, 1]
+export const COLOR_PURPLE = [1, 0, 1]
 export const COLOR_DEBUG = [0, 1, 1, 0.5]
 
 export const ID_PRESS = "Press to continue"

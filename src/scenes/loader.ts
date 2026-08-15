@@ -20,8 +20,8 @@ const prefab: TEntityProps = [
     { t: [, CENTER] },
     [["text", { x: [FONT_REGULAR, ID_PRESS, 1, 1] }]]
 ]
-const scene = () => getEntity("load") as TEntity
-const text = () => getEntity("load/text") as TEntity
+const scene = () => getEntity("load")!
+const text = () => getEntity("load/text")!
 
 export function initLoad() {
     addEntity(createEntity(prefab))
