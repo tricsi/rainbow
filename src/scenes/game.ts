@@ -1,4 +1,3 @@
-import { MOBILE } from "./../modules/utils"
 import { setScale } from "./../modules/entity/components/transform"
 import { TEntity, getChildren, getData, setData } from "./../modules/entity/entity"
 import { addEntity, createEntity, getEntity, TEntityProps } from "../modules/entity/entity"
@@ -73,7 +72,7 @@ function onUpDown([key, event]: TEvent<string>) {
 
 function onPointer() {
     for (const btn of buttons()) {
-        setButton(btn, (!!MOBILE() || !!input("Mouse0")) && isHover(btn))
+        setButton(btn, !!input("Tap") && isHover(btn))
     }
 }
 

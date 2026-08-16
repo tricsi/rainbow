@@ -1,4 +1,4 @@
-import { drawPoly, raycast } from "../../2d/context"
+import { drawPoly } from "../../2d/context"
 import { TEntity, FACTORIES, getComponent, getParam } from "../entity"
 import POINTER from "../../input/pointer"
 import {
@@ -29,7 +29,7 @@ export const getHandler = (layer: number): THandler | undefined => HANDLER.get(l
 export const getPolygon = (entity: TEntity): number[] | IPolygon => getComponent(entity, TEMP)
 export const getLayer = (entity: TEntity): number => getParam(entity, NAME, 1)
 export const getMask = (entity: TEntity): number => getParam(entity, NAME, 2)
-export const isHover = (entity: TEntity) => POINTER.reduce((hover, vec) => hover || testPoint(vec, getPolygon(entity)), false)
+export const isHover = (entity: TEntity) => POINTER.values().reduce((hover, vec) => hover || testPoint(vec, getPolygon(entity)), false)
 
 export const polygonSystem = (next: TEntity) => {
     const [, { _t, p }] = next
