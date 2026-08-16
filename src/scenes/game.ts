@@ -1,87 +1,84 @@
-import { setScale } from "./../modules/entity/components/transform"
-import { TEntity, getChildren, getData, setData } from "./../modules/entity/entity"
-import { addEntity, createEntity, getEntity, TEntityProps } from "../modules/entity/entity"
-import { CENTER, COLOR_BLUE, COLOR_PURPLE, COLOR_RED, COLOR_WHITE, COLOR_YELLOW } from "../config"
-import { on, TEvent } from "../modules/event"
-import { isHover } from "../modules/entity/components/polygon"
-import input from "../modules/input"
+import { addEntity, createEntity, getChildren, getEntity, removeEntity, TEntity, TEntityProps } from "../modules/entity/entity"
+import { BUTTON_DATA, CENTER, COLOR_BLUE, COLOR_PURPLE, COLOR_RED, COLOR_TRANSPARENT, COLOR_YELLOW, FONT_REGULAR, ID_PRESS } from "../config"
+import { initButtons } from "./buttons";
+import { off, on } from "../modules/event";
+import { mixer, play } from "../modules/audio";
+import { schedule } from "../modules/scheduler";
+import { setColor, setVisible } from "../modules/entity/components/color";
+import { pull } from "../modules/utils";
+import { setPosition } from "../modules/entity/components/transform";
 
-const gamePrefab: TEntityProps = ["game", { t: [, CENTER] }, [["btn", { t: [, [0, 108]] }]]]
+const gamePrefab: TEntityProps = [
+    "game",
+    { t: [, CENTER] },
+    [
+        ["txt", { x: [FONT_REGULAR, ID_PRESS, 1, 1] }],
+        ["btn", { t: [, [-51, 108]] }],
+        ["sheet", { t: [, [-51, 108]]}]
+    ]
+]
 
-const container = () => getEntity("game/btn")!
-const buttons = () => getChildren(container())
-const button = (i: number) => buttons()[i]
+const text = () => getEntity("game/txt")!
+const sheet = () => getEntity("game/sheet")!
 
-function createButton(tint: number[] = COLOR_WHITE, x = 0, y = 0) {
-    return createEntity([
-        ,
-        {
-            t: [, [x, y]],
-            p: [[0, 0, 16]]
-        },
-        [
-            [
-                "up",
-                {
-                    t: [[16, 16]],
-                    s: ["btn", 32, 32, 0, 1],
-                    c: tint
-                }
-            ],
-            [
-                "bg",
-                {
-                    t: [[16, 16]],
-                    s: ["btn", 32, 32, 0, 0],
-                    c: tint
-                }
-            ]
-        ]
-    ])
+let themeMusic: AudioBufferSourceNode
+let themeStart: number = 0
+
+function createNote() {
+    return createEntity([, {
+        t: [[16, 16]],
+        s: ["btn", 32, 32, 0, 1]
+    }])
 }
 
-function setButton(entity: TEntity, down: boolean) {
-    const data = getData(entity, false)
-    if (down !== data) {
-        setData(entity, down)
-        setScale(getEntity("up", entity)!, down ? 0.9 : 1)
+function update() {
+    const container = sheet()
+    const currentTime = themeMusic.context.currentTime - themeStart;
+    const notes = getChildren(container)
+    let i = 0;
+    for (const [btn, len, time] of BUTTON_DATA) {
+        let y = (time - currentTime) * -160
+        if (i >= notes.length || y > 0 || y < -200) {
+            continue
+        }
+        if (btn & 1 && notes[i]) {
+            setColor(notes[i], COLOR_RED)
+            setPosition(notes[i++], 0, y)
+        }
+        if (btn & 2 && notes[i]) {
+            setColor(notes[i], COLOR_YELLOW)
+            setPosition(notes[i++], 34, y)
+        }
+        if (btn & 4 && notes[i]) {
+            setColor(notes[i], COLOR_BLUE)
+            setPosition(notes[i++], 68, y)
+        }
+        if (btn & 8 && notes[i]) {
+            setColor(notes[i], COLOR_PURPLE)
+            setPosition(notes[i++], 102, y)
+        }
+    }
+    for (let j = i; j < notes.length; j++) {
+        setColor(notes[j], COLOR_TRANSPARENT)
     }
 }
 
-function onUpDown([key, event]: TEvent<string>) {
-    const down = event !== "up"
-    switch (key) {
-        case "KeyF":
-        case "Digit1":
-            setButton(button(0), down)
-            break
-        case "KeyG":
-        case "Digit2":
-            setButton(button(1), down)
-            break
-        case "KeyH":
-        case "Digit3":
-            setButton(button(2), down)
-            break
-        case "KeyJ":
-        case "Digit4":
-            setButton(button(3), down)
-            break
-    }
-}
-
-function onPointer() {
-    for (const btn of buttons()) {
-        setButton(btn, !!input("Tap") && isHover(btn))
-    }
+function onClick() {
+    off("up", onClick)
+    setVisible(text(), 0)
+    mixer("music", 0.5)
+    themeMusic = play("theme", false, "music")!
+    themeStart = themeMusic.context.currentTime
+    schedule(update)
+    update()
 }
 
 export function initGame() {
     addEntity(createEntity(gamePrefab))
-    addEntity(createButton(COLOR_RED, -51), container())
-    addEntity(createButton(COLOR_YELLOW, -17), container())
-    addEntity(createButton(COLOR_BLUE, 17), container())
-    addEntity(createButton(COLOR_PURPLE, 51), container())
-    on("up,down", onUpDown)
-    on("pointer", onPointer)
+    const container = sheet()
+    for (let i=0; i<10; i++) {
+        addEntity(createNote(), container)
+    }
+    initButtons()
+    on("up", onClick)
 }
