@@ -1,17 +1,20 @@
 import { COLOR_BLUE, COLOR_PURPLE, COLOR_RED, COLOR_WHITE, COLOR_YELLOW } from "../config";
+import { getColor, setColor } from "../modules/entity/components/color";
 import { isHover } from "../modules/entity/components/polygon";
 import { setScale } from "../modules/entity/components/transform";
-import { addEntity, createEntity, getChildren, getData, getEntity, setData, TEntity } from "../modules/entity/entity";
+import { addEntity, createEntity, getChildren, getData, getEntity, getName, setData, TEntity } from "../modules/entity/entity";
 import { on, TEvent } from "../modules/event";
 import input from "../modules/input";
+import { timer } from "../modules/scheduler";
+import { getCurrentData } from "./notes";
 
 const container = () => getEntity("game/btn")!
 const buttons = () => getChildren(container())
 const button = (i: number) => buttons()[i]
 
-function createButton(tint: number[] = COLOR_WHITE, x = 0, y = 0) {
+function createButton(id: string, tint: number[] = COLOR_WHITE, x = 0, y = 0) {
     return createEntity([
-        ,
+        id,
         {
             t: [, [x, y]],
             p: [[0, 0, 16]]
@@ -37,11 +40,21 @@ function createButton(tint: number[] = COLOR_WHITE, x = 0, y = 0) {
     ])
 }
 
-function setButton(entity: TEntity, down: boolean) {
+async function setButton(entity: TEntity, down: boolean) {
     const data = getData(entity, false)
     if (down !== data) {
         setData(entity, down)
-        setScale(getEntity("up", entity)!, down ? 0.9 : 1)
+        const id = parseInt(getName(entity))
+        const up = getEntity("up", entity)!
+        const [btn, gap] = getCurrentData(0.1)
+        setScale(up, down ? 0.9 : 1)
+        if (down && id & btn) {
+            console.log(id, gap)
+            const bg = getEntity("bg", entity)!
+            setColor(bg, COLOR_WHITE)
+            await timer(0.15)
+            setColor(bg, getColor(up))
+        }
     }
 }
 
@@ -74,10 +87,10 @@ function onPointer() {
 }
 
 export function initButtons() {
-    addEntity(createButton(COLOR_RED, 0), container())
-    addEntity(createButton(COLOR_YELLOW, 34), container())
-    addEntity(createButton(COLOR_BLUE, 68), container())
-    addEntity(createButton(COLOR_PURPLE, 102), container())
+    addEntity(createButton("1", COLOR_RED, 0), container())
+    addEntity(createButton("2", COLOR_YELLOW, 34), container())
+    addEntity(createButton("4", COLOR_BLUE, 68), container())
+    addEntity(createButton("8", COLOR_PURPLE, 102), container())
     on("up,down", onUpDown)
     on("pointer", onPointer)
 }
