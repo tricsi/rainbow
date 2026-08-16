@@ -38,13 +38,15 @@ function getCurrentTime() {
 
 export function getCurrentData(threshold: number) {
     const currentTime = getCurrentTime()
+    let idx = 0
     for (const [btn, len, time] of BUTTON_DATA) {
         const gap = abs(currentTime - time)
         if (gap <= threshold) {
-            return [btn, gap]
+            return [btn, gap, idx]
         }
+        btn && idx++
     }
-    return [0, 0]
+    return [0, 0, 0]
 }
 
 function update(delta: number) {
