@@ -11,6 +11,7 @@ import { setText } from "../modules/entity/components/text"
 import { audio, mixer, music } from "../modules/audio"
 import { DOC } from "../modules/utils"
 import { initGame } from "./game"
+import { timer } from "../modules/scheduler";
 
 const prefab: TEntityProps = [
     "load",
@@ -35,6 +36,7 @@ async function onClick() {
     off("up", onClick)
     setText(text(), ID_LOADING)
     await initAudio()
+    await timer(0.5)
     removeEntity(scene())
     initGame()
 }

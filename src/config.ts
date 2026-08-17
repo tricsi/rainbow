@@ -1,11 +1,11 @@
 import { createSprite } from "./modules/2d/context"
-import { TChannelProps } from "./modules/audio";
+import { TChannelProps, wave } from "./modules/audio";
 
 function parseData(sheet: string, tempo: number): number[][] {
     let time = 0
     const config = sheet.split(',').map(cfg => {
         const len = parseInt(cfg[1]) * tempo
-        const row = [parseInt(cfg[0]), len, time, ]
+        const row = [parseInt(cfg[0], 16), len, time]
         time += len;
         return row
     })
@@ -14,16 +14,18 @@ function parseData(sheet: string, tempo: number): number[][] {
 
 export const BUTTON_DATA: number[][] = parseData(
     "08,"+
-    "11,01,21,01,11,01,21,21,"+ 
-    "11,01,21,01,11,01,21,21,"+ 
-    "11,01,21,01,11,01,21,21,"+ 
-    "11,01,21,01,11,01,21,21,"+ 
-    "11,01,21,01,11,01,21,21",
+    "21,01,41,01,21,01,41,41,"+ 
+    "21,01,41,01,21,01,41,41,"+ 
+    "38,C8,"+
+    "21,01,41,01,21,01,41,41",
     0.2
 );
+export const WAVE_CHIPTUNE = wave((n) => (4 / (n * Math.PI)) * Math.sin(Math.PI * n * 0.18))
+    
 export const THEME_MUSIC: TChannelProps[] = [
-    [["custom", 0.2, [0.5, 0]], "8|1|" + "2,1e3,3,1e3,1e3|5", 0.2],
-    [["sine", 0.2, [1, 0]], "8|1|" + "1e2,3,1e2,3|5", 0.2]
+    [[WAVE_CHIPTUNE, 0.3, [0.2, 0.1]], "8|3|8c3e3g3,8g3h3d4,8", 0.2],
+    [["custom", 0.2, [1, 0]], "8|1|" + "1e1,1,1e3,1,1e1,1,1e3,1e3|5", 0.2],
+    [["sine", 0.2, [1, 0]], "8|1|" + "1e1,3,1e1,3|5", 0.2]
 ]
 
 export const SPRITE_PTC = createSprite("ptc", 3, 3, 1)

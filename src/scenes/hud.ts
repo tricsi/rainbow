@@ -3,7 +3,7 @@ import { setVisible } from "../modules/entity/components/color"
 import { setText } from "../modules/entity/components/text"
 import { addEntity, createEntity, getEntity, TEntityProps } from "../modules/entity/entity"
 import { on, TEvent } from "../modules/event"
-import { max } from "../modules/math";
+import { max, round } from "../modules/math";
 
 let allBtn = 0
 let prevIdx = 0
@@ -51,7 +51,7 @@ function onMiss() {
 
 function update() {
     setText(streakText(), ID_MULTI + multiplier())
-    setText(scoreText(), ID_SCORE + scoreValue)
+    setText(scoreText(), ID_SCORE + round(scoreValue))
 }
 
 function onStart() {
