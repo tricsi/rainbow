@@ -54,6 +54,7 @@ async function setButton(entity: TEntity, down: boolean) {
             setColor(bg, isHit ? COLOR_HIGH : COLOR_DARK)
             await timer(len)
         }
+        emit("release", [idx, id, btn, gap])
         setColor(bg, COLOR_WHITE)
     }
 }

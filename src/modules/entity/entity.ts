@@ -59,7 +59,7 @@ export const getParent = (entity: TEntity) => getComponent(entity, "_")
 export const getParam = (entity: TEntity, type: string, index: number) => type in entity[1] ? entity[1][type][index] : undefined
 export const setParam = (entity: TEntity, type: string, index: number, value: any) => entity[1][type][index] = value
 export const getData = <T=any>(entity: TEntity, value?: T) => getParam(entity, DATA_NAME, 0) || value
-export const setData = <T=any>(entity: TEntity, value: T) =>setParam(entity, DATA_NAME, 0, value)
+export const setData = <T=any>(entity: TEntity, value: T) => setParam(entity, DATA_NAME, 0, value)
 export const isDisabled = (entity: TEntity) => getParam(entity, DATA_NAME, 1)
 export const setDisabled = (entity: TEntity, value: any = 1) => setParam(entity, DATA_NAME, 1, !!value)
 
