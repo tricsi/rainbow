@@ -42,11 +42,11 @@ export function getCurrentData(threshold: number) {
     for (const [btn, len, time] of BUTTON_DATA) {
         const gap = abs(currentTime - time)
         if (gap <= threshold) {
-            return [idx, btn, gap]
+            return [idx, btn, len, gap]
         }
         btn && idx++
     }
-    return [0, 0, 0]
+    return [0, 0, 0, 0]
 }
 
 function update(delta: number) {

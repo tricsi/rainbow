@@ -1,23 +1,24 @@
-import { COLOR_BLUE, COLOR_PURPLE, COLOR_RED, COLOR_WHITE, COLOR_YELLOW } from "../config";
+import { COLOR_BLUE, COLOR_DARK, COLOR_HIGH, COLOR_PURPLE, COLOR_RED, COLOR_WHITE, COLOR_YELLOW } from "../config";
 import { getColor, setColor } from "../modules/entity/components/color";
 import { isHover } from "../modules/entity/components/polygon";
 import { setScale } from "../modules/entity/components/transform";
 import { addEntity, createEntity, getChildren, getData, getEntity, getName, setData, TEntity } from "../modules/entity/entity";
 import { emit, on, TEvent } from "../modules/event";
 import input from "../modules/input";
-import { timer } from "../modules/scheduler";
+import { kill, timer, TTimerToken } from "../modules/scheduler";
 import { getCurrentData } from "./notes";
 
 const container = () => getEntity("/btn")!
 const buttons = () => getChildren(container())
 const button = (i: number) => buttons()[i]
 
-function createButton(id: string, tint: number[] = COLOR_WHITE, x = 0, y = 0) {
+function createButton(id: string, tint: number[], x: number) {
     return createEntity([
         id,
         {
-            t: [, [x, y]],
-            p: [[0, 0, 16]]
+            t: [, [x, 0]],
+            p: [[0, 0, 16]],
+            c: tint
         },
         [
             [
@@ -25,7 +26,6 @@ function createButton(id: string, tint: number[] = COLOR_WHITE, x = 0, y = 0) {
                 {
                     t: [[16, 16]],
                     s: ["btn", 32, 32, 0, 1],
-                    c: tint
                 }
             ],
             [
@@ -33,7 +33,6 @@ function createButton(id: string, tint: number[] = COLOR_WHITE, x = 0, y = 0) {
                 {
                     t: [[16, 16]],
                     s: ["btn", 32, 32, 0, 0],
-                    c: tint
                 }
             ]
         ]
@@ -46,15 +45,16 @@ async function setButton(entity: TEntity, down: boolean) {
         setData(entity, down)
         const id = parseInt(getName(entity))
         const up = getEntity("up", entity)!
-        const [idx, btn, gap] = getCurrentData(0.1)
+        const bg = getEntity("bg", entity)!
+        const [idx, btn, len, gap] = getCurrentData(0.1)
         setScale(up, down ? 0.9 : 1)
-        if (down && id & btn) {
-            emit("hit", [idx, id, btn, gap])
-            const bg = getEntity("bg", entity)!
-            setColor(bg, COLOR_WHITE)
-            await timer(0.15)
-            setColor(bg, getColor(up))
+        if (down) {
+            const isHit = id & btn
+            emit(isHit ? "hit" : "miss", [idx, id, btn, gap])
+            setColor(bg, isHit ? COLOR_HIGH : COLOR_DARK)
+            await timer(len)
         }
+        setColor(bg, COLOR_WHITE)
     }
 }
 

@@ -4,9 +4,9 @@ import { TChannelProps } from "./modules/audio";
 function parseData(sheet: string, tempo: number): number[][] {
     let time = 0
     const config = sheet.split(',').map(cfg => {
-        const len = parseInt(cfg[1])
-        const row = [parseInt(cfg[0]), len, time, len * tempo]
-        time += len * tempo;
+        const len = parseInt(cfg[1]) * tempo
+        const row = [parseInt(cfg[0]), len, time, ]
+        time += len;
         return row
     })
     return config;
@@ -34,6 +34,7 @@ export const CENTER = [72, 128]
 export const COLOR_TRANSPARENT = [0, 0, 0, 0]
 export const COLOR_BLACK = [0, 0, 0, 1]
 export const COLOR_WHITE = [1, 1, 1, 1]
+export const COLOR_HIGH = [2, 2, 2, 1]
 export const COLOR_DARK = [0.3, 0.3, 0.3]
 export const COLOR_LIGHT = [0.7, 0.7, 0.7]
 export const COLOR_RED = [1, 0, 0, 1]
@@ -44,6 +45,6 @@ export const COLOR_DEBUG = [0, 1, 1, 0.5]
 
 export const ID_PRESS = "Press to continue"
 export const ID_LOADING = "Loading..."
-export const ID_STREAK = "Streak:"
+export const ID_MULTI = "X"
 export const ID_SCORE = "Score:"
 
