@@ -27,7 +27,7 @@ const notePrefab: TEntityProps = [
         s: ["btn", 32, 32, 0, 1]
     }
 ]
-const container = () => getEntity("game/sheet")!
+const container = () => getEntity("/sheet")!
 
 let context: AudioContext | undefined
 let currentTime: number = 0
@@ -42,7 +42,7 @@ export function getCurrentData(threshold: number) {
     for (const [btn, len, time] of BUTTON_DATA) {
         const gap = abs(currentTime - time)
         if (gap <= threshold) {
-            return [btn, gap, idx]
+            return [idx, btn, gap]
         }
         btn && idx++
     }

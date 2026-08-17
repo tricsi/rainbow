@@ -22,8 +22,8 @@ export const BUTTON_DATA: number[][] = parseData(
     0.2
 );
 export const THEME_MUSIC: TChannelProps[] = [
-    [["custom", 0.2, [1, 0.2, 0]], "8|1|" + "2,1a2,3,1a2,1a2|5", 0.2],
-    [["sine", 0.2, [1, 0.2, 0]], "8|1|" + "1c2,3,1c2,3|5", 0.2]
+    [["custom", 0.2, [0.5, 0]], "8|1|" + "2,1e3,3,1e3,1e3|5", 0.2],
+    [["sine", 0.2, [1, 0]], "8|1|" + "1e2,3,1e2,3|5", 0.2]
 ]
 
 export const SPRITE_PTC = createSprite("ptc", 3, 3, 1)
@@ -44,4 +44,6 @@ export const COLOR_DEBUG = [0, 1, 1, 0.5]
 
 export const ID_PRESS = "Press to continue"
 export const ID_LOADING = "Loading..."
+export const ID_STREAK = "Streak:"
+export const ID_SCORE = "Score:"
 

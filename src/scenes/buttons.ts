@@ -8,7 +8,7 @@ import input from "../modules/input";
 import { timer } from "../modules/scheduler";
 import { getCurrentData } from "./notes";
 
-const container = () => getEntity("game/btn")!
+const container = () => getEntity("/btn")!
 const buttons = () => getChildren(container())
 const button = (i: number) => buttons()[i]
 
@@ -46,10 +46,10 @@ async function setButton(entity: TEntity, down: boolean) {
         setData(entity, down)
         const id = parseInt(getName(entity))
         const up = getEntity("up", entity)!
-        const [btn, gap, idx] = getCurrentData(0.1)
+        const [idx, btn, gap] = getCurrentData(0.1)
         setScale(up, down ? 0.9 : 1)
         if (down && id & btn) {
-            emit("hit", [id, btn, gap, idx])
+            emit("hit", [idx, id, btn, gap])
             const bg = getEntity("bg", entity)!
             setColor(bg, COLOR_WHITE)
             await timer(0.15)
