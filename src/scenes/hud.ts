@@ -11,6 +11,7 @@ let activeIdx = 0
 let scoreValue = 0
 let streakValue = 0
 let counter = -1
+let counterStart = 0
 
 const hudPrefab: TEntityProps = [
     "hud",
@@ -40,6 +41,7 @@ function onHit([data]: TEvent<number[]>) {
     streakValue = step <= 1 ? streakValue + 1 : 0
     if (allBtn === btn) {
         counter = idx
+        counterStart = performance.now()
         scoreValue += multiplier() * 25
     } else {
         streakValue = max(streakValue - 1, 0)
@@ -59,8 +61,8 @@ function onRelease([data]: TEvent<number[]>) {
 }
 
 function update(delta: number) {
-    if (counter === activeIdx) {
-        scoreValue += delta * multiplier()
+    if (counter === activeIdx && performance.now() - counterStart > 300) {
+        scoreValue += delta * multiplier() * 5
     }
     setText(streakText(), ID_MULTI + multiplier())
     setText(scoreText(), ID_SCORE + round(scoreValue))

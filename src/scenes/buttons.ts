@@ -1,11 +1,11 @@
 import { COLOR_BLUE, COLOR_DARK, COLOR_HIGH, COLOR_PURPLE, COLOR_RED, COLOR_WHITE, COLOR_YELLOW } from "../config";
-import { getColor, setColor } from "../modules/entity/components/color";
+import { setColor } from "../modules/entity/components/color";
 import { isHover } from "../modules/entity/components/polygon";
 import { setScale } from "../modules/entity/components/transform";
 import { addEntity, createEntity, getChildren, getData, getEntity, getName, setData, TEntity } from "../modules/entity/entity";
 import { emit, on, TEvent } from "../modules/event";
 import input from "../modules/input";
-import { kill, timer, TTimerToken } from "../modules/scheduler";
+import { timer } from "../modules/scheduler";
 import { getCurrentData } from "./notes";
 
 const container = () => getEntity("/btn")!
@@ -46,7 +46,7 @@ async function setButton(entity: TEntity, down: boolean) {
         const id = parseInt(getName(entity))
         const up = getEntity("up", entity)!
         const bg = getEntity("bg", entity)!
-        const [idx, btn, len, gap] = getCurrentData(0.1)
+        const [idx, btn, len, gap] = getCurrentData(0.12)
         setScale(up, down ? 0.9 : 1)
         if (down) {
             const isHit = id & btn
