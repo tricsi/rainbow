@@ -59,7 +59,6 @@ export const THEME_MUSIC: TChannelProps[] = [
 
 export const SPRITE_PTC = createSprite("ptc", 3, 3, 1)
 export const FONT_REGULAR = createSprite("font", 5, 7)
-export const FONT_TINY = createSprite("tiny", 3, 5)
 export const CENTER = [72, 128]
 
 export const COLOR_TRANSPARENT = [0, 0, 0, 0]
