@@ -20,9 +20,9 @@ const hudPrefab: TEntityProps = [
         ["logo" , {t: [,[45, 3], 1.6], x: [FONT_REGULAR, "Sleepy on\n\nRoad", 1]}, "Rainbow".split("").map((c, i) => [
             c, {t: [, [i * 6 - 21, 8]], x: [FONT_REGULAR, c], c: COLOR_RAINBOW[i]}
         ])],
-        ["uni", { t: [[55, 0], [144, 1]], s: ["uni", 55, 54, 0, 2]}],
-        ["streak", { x: [FONT_REGULAR, , 0, 0], t: [, [4, 43], 1.2], c: LIGHT_CYAN }],
-        ["score", { x: [FONT_REGULAR, , 0, 0], t: [, [22, 43], 1.2], c: LIGHT_YELLOW }],
+        ["uni", { t: [[55, 0], [144, 1]], s: ["uni", 55, 54, 0, 2], a: [[[0], [1], [2, 3, 4, 3]], 10, 0, 2]}],
+        ["streak", { x: [FONT_REGULAR, , 0, 0], t: [, [6, 43], 1], c: LIGHT_CYAN }],
+        ["score", { x: [FONT_REGULAR, , 0, 0], t: [, [22, 43], 1], c: LIGHT_YELLOW }],
         ["tap", { x: [FONT_REGULAR, ID_COIN, 1, 1], t:[, [72, 150], 1.2] }],
         ["bg", { p: [[0, 0, 144, 54]], c: COLOR_BLACK} ],
     ]
