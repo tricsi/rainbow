@@ -13,6 +13,7 @@ import { traverse, WORLD } from "./modules/entity/entity"
 import { schedule, update } from "./modules/scheduler"
 import { $ } from "./modules/utils"
 import { initLoad } from "./scenes/loader"
+import { initGame } from "./scenes/game";
 
 schedule((delta) => {
     traverse(
@@ -35,7 +36,7 @@ schedule((delta) => {
 }, 9)
 
 createContext($("canvas") as HTMLCanvasElement, SPRITESHEET, () => {
-    initLoad()
+    initGame()
     update()
 })
 

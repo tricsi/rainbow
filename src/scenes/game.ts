@@ -1,5 +1,5 @@
 import { addEntity, createEntity, TEntityProps } from "../modules/entity/entity"
-import { CENTER, COLOR_BLACK } from "../config"
+import { CENTER, COLOR_BLACK, COLOR_DARK, FONT_REGULAR } from "../config"
 import { initButtons } from "./buttons"
 import { off, on } from "../modules/event"
 import { initNotes, playNotes } from "./notes"
@@ -9,10 +9,9 @@ const gamePrefab: TEntityProps = [
     "",
     { t: [, CENTER] },
     [
-        ["uni", { t: [[27, 54], [0, -72]], s: ["uni", 55, 54]}],
-        ["btn", { t: [, [-51, 108]] }],
-        ["mask", { p: [[-72, 108, 144, 20]], c: COLOR_BLACK} ],
-        ["sheet", { t: [, [-51, 108]] }]
+        ["btn", { t: [, [-51, 110]] }],
+        ["mask", { p: [[-72, 110, 144, 18]], c: COLOR_DARK} ],
+        ["sheet", { t: [, [-51, 110]] }]
     ]
 ]
 

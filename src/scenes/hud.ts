@@ -1,4 +1,4 @@
-import { CENTER, FONT_REGULAR, ID_PRESS, ID_SCORE, ID_MULTI } from "../config"
+import { CENTER, FONT_REGULAR, ID_PRESS, ID_SCORE, ID_MULTI, COLOR_BLACK, COLOR_BLUE, COLOR_DARK } from "../config"
 import { setVisible } from "../modules/entity/components/color"
 import { setText } from "../modules/entity/components/text"
 import { addEntity, createEntity, getEntity, TEntityProps } from "../modules/entity/entity"
@@ -17,9 +17,12 @@ const hudPrefab: TEntityProps = [
     "hud",
     {},
     [
-        ["score", { x: [FONT_REGULAR, , 0, 0], t: [, [2, 2]] }],
-        ["streak", { x: [FONT_REGULAR, , 2, 0], t: [, [142, 2]] }],
-        ["tap", { x: [FONT_REGULAR, ID_PRESS, 1, 1], t:[, CENTER] }]
+        ["logo" , {t: [,[2, 2], 1.4], x: [FONT_REGULAR, "Sleepy on\nRainbow\nRoad"]}],
+        ["score", { x: [FONT_REGULAR, , 0, 0], t: [, [2, 46]] }],
+        ["streak", { x: [FONT_REGULAR, , 0, 0], t: [, [2, 37]] }],
+        ["tap", { x: [FONT_REGULAR, ID_PRESS, 1, 1], t:[, CENTER] }],
+        ["uni", { t: [[55, 0], [143, 2]], s: ["uni", 55, 54, 0, 0]}],
+        ["bg", { p: [[0, 0, 144, 55]], c: COLOR_DARK} ],
     ]
 ]
 
@@ -65,7 +68,7 @@ function update(delta: number) {
         scoreValue += delta * multiplier() * 5
     }
     setText(streakText(), ID_MULTI + multiplier())
-    setText(scoreText(), ID_SCORE + round(scoreValue))
+    setText(scoreText(), ID_SCORE + String(round(scoreValue)).padStart(6, "0"))
 }
 
 function onStart() {

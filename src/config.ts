@@ -76,4 +76,4 @@ export const COLOR_DEBUG = [0, 1, 1, 0.5]
 export const ID_PRESS = "Press to continue"
 export const ID_LOADING = "Loading..."
 export const ID_MULTI = "X"
-export const ID_SCORE = "Score:"
+export const ID_SCORE = "Sc:"
