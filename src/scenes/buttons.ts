@@ -1,4 +1,4 @@
-import { LIGHT_CYAN, DARK_GREY, COLOR_HIGH, LIGHT_PURPLE, LIGHT_RED, COLOR_WHITE, LIGHT_YELLOW } from "../config";
+import { DARK_CYAN, DARK_GREY, COLOR_HIGH, DARK_PURPLE, DARK_RED, COLOR_WHITE, DARK_YELLOW } from "../config";
 import { setColor } from "../modules/entity/components/color";
 import { isHover } from "../modules/entity/components/polygon";
 import { setScale } from "../modules/entity/components/transform";
@@ -88,10 +88,10 @@ function onPointer() {
 }
 
 export function initButtons() {
-    addEntity(createButton("1", LIGHT_RED, 0), container())
-    addEntity(createButton("2", LIGHT_YELLOW, 34), container())
-    addEntity(createButton("4", LIGHT_CYAN, 68), container())
-    addEntity(createButton("8", LIGHT_PURPLE, 102), container())
+    addEntity(createButton("1", DARK_RED, 0), container())
+    addEntity(createButton("2", DARK_YELLOW, 34), container())
+    addEntity(createButton("4", DARK_CYAN, 68), container())
+    addEntity(createButton("8", DARK_PURPLE, 102), container())
     on("up,down", onUpDown)
     on("pointer", onPointer)
 }

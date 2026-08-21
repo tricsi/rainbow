@@ -80,9 +80,19 @@ export const LIGHT_YELLOW = [1, 1, 0, 1]
 export const DARK_YELLOW = [0.75, 0.75, 0, 1]
 export const LIGHT_PURPLE = [1, 0, 1, 1]
 export const DARK_PURPLE = [0.75, 0, 0.75, 1]
+export const COLOR_RAINBOW = [
+    DARK_RED,
+    LIGHT_RED,
+    LIGHT_YELLOW,
+    DARK_GREEN,
+    DARK_CYAN,
+    DARK_PURPLE,
+    LIGHT_PURPLE
+]
 
 export const ID_COIN = "Insert coin"
 export const ID_PRESS = "Press to start"
 export const ID_LOADING = "Loading..."
 export const ID_MULTI = "X"
-export const ID_SCORE = "Sc:"
+export const ID_SCORE = "SC:"
+export const ID_HISCORE = "HI:"
