@@ -1,10 +1,10 @@
 import {
     BUTTON_DATA,
-    COLOR_BLUE,
-    COLOR_PURPLE,
-    COLOR_RED,
+    LIGHT_CYAN,
+    LIGHT_PURPLE,
+    LIGHT_RED,
     COLOR_TRANSPARENT,
-    COLOR_YELLOW,
+    LIGHT_YELLOW,
     SPRITE_PTC
 } from "../config"
 import { mixer, play } from "../modules/audio"
@@ -74,22 +74,22 @@ function update(delta: number) {
         }
         if (btn & 1 && notes[i]) {
             setScale(line(notes[i]), 2, scale)
-            setColor(notes[i], COLOR_RED)
+            setColor(notes[i], LIGHT_RED)
             setPosition(notes[i++], 0, y)
         }
         if (btn & 2 && notes[i]) {
             setScale(line(notes[i]), 2, scale)
-            setColor(notes[i], COLOR_YELLOW)
+            setColor(notes[i], LIGHT_YELLOW)
             setPosition(notes[i++], 34, y)
         }
         if (btn & 4 && notes[i]) {
             setScale(line(notes[i]), 2, scale)
-            setColor(notes[i], COLOR_BLUE)
+            setColor(notes[i], LIGHT_CYAN)
             setPosition(notes[i++], 68, y)
         }
         if (btn & 8 && notes[i]) {
             setScale(line(notes[i]), 2, scale)
-            setColor(notes[i], COLOR_PURPLE)
+            setColor(notes[i], LIGHT_PURPLE)
             setPosition(notes[i++], 102, y)
         }
     }

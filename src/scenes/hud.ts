@@ -1,4 +1,4 @@
-import { CENTER, FONT_REGULAR, ID_PRESS, ID_SCORE, ID_MULTI, COLOR_BLACK, COLOR_BLUE, COLOR_DARK } from "../config"
+import { FONT_REGULAR, ID_SCORE, ID_MULTI, COLOR_BLACK, ID_COIN, DARK_YELLOW, DARK_CYAN, LIGHT_CYAN, LIGHT_YELLOW } from "../config"
 import { setVisible } from "../modules/entity/components/color"
 import { setText } from "../modules/entity/components/text"
 import { addEntity, createEntity, getEntity, TEntityProps } from "../modules/entity/entity"
@@ -17,12 +17,12 @@ const hudPrefab: TEntityProps = [
     "hud",
     {},
     [
-        ["logo" , {t: [,[2, 2], 1.4], x: [FONT_REGULAR, "Sleepy on\nRainbow\nRoad"]}],
-        ["score", { x: [FONT_REGULAR, , 0, 0], t: [, [2, 46]] }],
-        ["streak", { x: [FONT_REGULAR, , 0, 0], t: [, [2, 37]] }],
-        ["tap", { x: [FONT_REGULAR, ID_PRESS, 1, 1], t:[, CENTER] }],
-        ["uni", { t: [[55, 0], [143, 2]], s: ["uni", 55, 54, 0, 0]}],
-        ["bg", { p: [[0, 0, 144, 55]], c: COLOR_DARK} ],
+        ["logo" , {t: [,[2, 3], 1.6], x: [FONT_REGULAR, "Sleepy on\nRainbow\nRoad", 0]}],
+        ["uni", { t: [[55, 0], [144, 1]], s: ["uni", 55, 54, 0, 2]}],
+        ["streak", { x: [FONT_REGULAR, , 0, 0], t: [, [2, 43], 1.2], c: LIGHT_CYAN }],
+        ["score", { x: [FONT_REGULAR, , 0, 0], t: [, [20, 43], 1.2], c: LIGHT_YELLOW }],
+        ["tap", { x: [FONT_REGULAR, ID_COIN, 1, 1], t:[, [72, 150], 1.2] }],
+        ["bg", { p: [[0, 0, 144, 54]], c: COLOR_BLACK} ],
     ]
 ]
 

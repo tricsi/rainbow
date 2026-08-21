@@ -1,4 +1,4 @@
-import { COLOR_BLUE, COLOR_DARK, COLOR_HIGH, COLOR_PURPLE, COLOR_RED, COLOR_WHITE, COLOR_YELLOW } from "../config";
+import { LIGHT_CYAN, DARK_GREY, COLOR_HIGH, LIGHT_PURPLE, LIGHT_RED, COLOR_WHITE, LIGHT_YELLOW } from "../config";
 import { setColor } from "../modules/entity/components/color";
 import { isHover } from "../modules/entity/components/polygon";
 import { setScale } from "../modules/entity/components/transform";
@@ -51,7 +51,7 @@ async function setButton(entity: TEntity, down: boolean) {
         if (down) {
             const isHit = id & btn
             emit(isHit ? "hit" : "miss", [idx, id, btn, gap])
-            setColor(bg, isHit ? COLOR_HIGH : COLOR_DARK)
+            setColor(bg, isHit ? COLOR_HIGH : DARK_GREY)
             await timer(len)
         }
         emit("release", [idx, id, btn, gap])
@@ -88,10 +88,10 @@ function onPointer() {
 }
 
 export function initButtons() {
-    addEntity(createButton("1", COLOR_RED, 0), container())
-    addEntity(createButton("2", COLOR_YELLOW, 34), container())
-    addEntity(createButton("4", COLOR_BLUE, 68), container())
-    addEntity(createButton("8", COLOR_PURPLE, 102), container())
+    addEntity(createButton("1", LIGHT_RED, 0), container())
+    addEntity(createButton("2", LIGHT_YELLOW, 34), container())
+    addEntity(createButton("4", LIGHT_CYAN, 68), container())
+    addEntity(createButton("8", LIGHT_PURPLE, 102), container())
     on("up,down", onUpDown)
     on("pointer", onPointer)
 }

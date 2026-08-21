@@ -58,22 +58,31 @@ export const THEME_MUSIC: TChannelProps[] = [
 ]
 
 export const SPRITE_PTC = createSprite("ptc", 3, 3, 1)
+export const SPRITE_FRAME = createSprite("frame", 12, 12, 1)
 export const FONT_REGULAR = createSprite("font", 5, 7)
 export const CENTER = [72, 128]
 
 export const COLOR_TRANSPARENT = [0, 0, 0, 0]
 export const COLOR_BLACK = [0, 0, 0, 1]
 export const COLOR_WHITE = [1, 1, 1, 1]
-export const COLOR_HIGH = [2, 2, 2, 1]
-export const COLOR_DARK = [0.3, 0.3, 0.3]
-export const COLOR_LIGHT = [0.7, 0.7, 0.7]
-export const COLOR_RED = [1, 0, 0, 1]
-export const COLOR_YELLOW = [1, 1, 0, 1]
-export const COLOR_BLUE = [0, 1, 1, 1]
-export const COLOR_PURPLE = [1, 0, 1, 1]
-export const COLOR_DEBUG = [0, 1, 1, 0.5]
+export const COLOR_HIGH = [1.33, 1.33, 1.33, 1]
+export const LIGHT_GREY = [0.75, 0.75, 0.75]
+export const DARK_GREY = [0.25, 0.25, 0.25]
+export const LIGHT_RED = [1, 0, 0, 1]
+export const DARK_RED = [0.75, 0, 0, 1]
+export const LIGHT_GREEN = [0, 1, 0, 1]
+export const DARK_GREEN = [0, 0.75, 0, 1]
+export const LIGHT_BLUE = [0, 0, 1, 1]
+export const DARK_BLUE = [0, 0, 0.75, 1]
+export const LIGHT_CYAN = [0, 1, 1, 1]
+export const DARK_CYAN = [0, 0.75, 0.75, 1]
+export const LIGHT_YELLOW = [1, 1, 0, 1]
+export const DARK_YELLOW = [0.75, 0.75, 0, 1]
+export const LIGHT_PURPLE = [1, 0, 1, 1]
+export const DARK_PURPLE = [0.75, 0, 0.75, 1]
 
-export const ID_PRESS = "Press to continue"
+export const ID_COIN = "Insert coin"
+export const ID_PRESS = "Press to start"
 export const ID_LOADING = "Loading..."
 export const ID_MULTI = "X"
 export const ID_SCORE = "Sc:"

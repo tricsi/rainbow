@@ -36,7 +36,7 @@ schedule((delta) => {
 }, 9)
 
 createContext($("canvas") as HTMLCanvasElement, SPRITESHEET, () => {
-    initGame()
+    initLoad()
     update()
 })
 
