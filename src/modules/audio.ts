@@ -1,4 +1,4 @@
-import { max, min, pow, random, round } from "./math"
+import { max, min, pow, random } from "./math"
 
 /** [WaveType, Length, Curve] */
 export type TSoundProps = [OscillatorType | number[], number, number | number[]]
