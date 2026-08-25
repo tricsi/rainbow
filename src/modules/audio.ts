@@ -253,13 +253,18 @@ export function mixer(
  * @param gain - The mixer ID to route through.
  * @returns The AudioBufferSourceNode or null if not found.
  */
-export function play(id: string, loop = false, gain = "master"): AudioBufferSourceNode | null {
+export function play(
+    id: string,
+    loop = false,
+    gain = "master",
+    offset: number = 0
+): AudioBufferSourceNode | null {
     if (BUFFERS.has(id)) {
         const src = CONTEXT.createBufferSource()
         src.loop = loop
         src.buffer = BUFFERS.get(id) as AudioBuffer
         src.connect(mixer(gain))
-        src.start()
+        src.start(CONTEXT.currentTime, offset)
         return src
     }
     return null

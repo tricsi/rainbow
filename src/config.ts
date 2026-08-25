@@ -21,6 +21,7 @@ function parseData(sheet: string, tempo: number): number[][] {
 
 const BUTTON_BASS = "21,01,41,01,21,01,41,41"
 const BUTTON_CHORDS = "A7,01,67,01,57,01,37,01"
+const BUTTON_CODA = "C7,01,A7,01,57,01,67,01"
 const BUTTON_VERSE =
     "41,01,41,21,41,01,81,01," +
     "41,01,41,21,12,02," +
@@ -30,14 +31,11 @@ const BUTTON_VERSE =
     "41,01,41,21,12,02," +
     "41,01,41,21,41,01,81,01," +
     "84,42,22"
-const BUTTON_BODY = 
-    "41,41,41,41,02,21,21," +
-    "11,01,11,21,82,42," +
-    "21,21,21,21,02,11,11," +
-    "21,01,21,11,22,42"
+const BUTTON_BODY =
+    "41,41,41,41,02,21,21," + "11,01,11,21,82,42," + "21,21,21,21,02,11,11," + "21,01,21,11,22,42"
 
 export const BUTTON_DATA: number[][] = parseData(
-    `08|1|${BUTTON_BASS}|4|${BUTTON_CHORDS},${BUTTON_VERSE},${BUTTON_CHORDS}|1|${BUTTON_BODY}|2|${BUTTON_VERSE}`, // chords
+    `08|1|${BUTTON_BASS}|4|${BUTTON_CHORDS},${BUTTON_VERSE},${BUTTON_CHORDS}|1|${BUTTON_BODY}|2|${BUTTON_VERSE}|1|${BUTTON_CODA}|2|${BUTTON_BODY}|2|${BUTTON_VERSE}|2|13`,
     0.25
 )
 export const WAVE_BASS = [0, 1, 0.8, 0.2, 0.02]
@@ -60,25 +58,29 @@ const SONG_VERSE =
     "1d4,1,1d4,1c4,2b3,2," +
     "1c4,1,1c4,1a3,1c4,1,1e4,1," +
     "4f4,2e4,2d4"
+const CHORD_BODY = "8c3e3g3,8g2b2d3,8a2c3e3,8f2a2c3"
+const CHORD_CODA = "8d3f3a3,8a2c3e3,8f2a2c3,8g2b2d3"
+const BASS_BODY =
+    "1c2,1,1c2,1,1c2,1,1c2,1b1," +
+    "1g1,1,1g1,1,2g1,2," +
+    "1a1,1,1a1,1,1a1,1,1a1,1g1," +
+    "2f1,2,2a1,2b1"
+const BASS_CODA =
+    "1d2,1,1d2,1,1d2,1,1d2,1c2," +
+    "1a1,1,1a1,1,2a1,2," +
+    "1f1,1,1f1,1,1f1,1,1f1,1fb1," +
+    "2g1,2,2g1,2a1"
 
 export const THEME_MUSIC: TChannelProps[] = [
     [
         [WAVE_CHIPTUNE, 0.2, [0.3, 0.1]],
-        `8|9|${SONG_VERSE}|1|8|4|${SONG_BODY}|2|${SONG_VERSE}|1`,
+        `8|9|${SONG_VERSE}|1|8|4|${SONG_BODY}|2|${SONG_VERSE}|1|8|8|${SONG_BODY}|2|${SONG_VERSE}|2|3c4`,
         0.25
     ],
-    [[WAVE_ORGAN2, 0.2, [0.2, 0.2]], "8|5|8c3e3g3,8g2b2d3,8a2c3e3,8f2a2c3|8", 0.25],
-    [
-        [WAVE_BASS, 0.2, [0.4, 0.1]],
-        "8|1|" +
-            "1c2,1,1c2,1,1c2,1,1c2,1b1," +
-            "1g1,1,1g1,1,2g1,2," +
-            "1a1,1,1a1,1,1a1,1,1a1,1g1," +
-            "2f1,2,2a1,2b1|9",
-        0.25
-    ],
-    [["custom", 0.2, [3, 0]], "8|1|1e1,1,1e3,1,1e1,1,1e3,1e3|36", 0.25],
-    [["sine", 0.2, [1, 0]], "8|1|1e1,3,1e1,3|36", 0.25]
+    [[WAVE_ORGAN2, 0.2, [0.2, 0.2]], `8|5|${CHORD_BODY}|8|${CHORD_CODA}|2|${CHORD_BODY}|6`, 0.25],
+    [[WAVE_BASS, 0.2, [0.4, 0.1]], `8|1|${BASS_BODY}|9|${BASS_CODA}|2|${BASS_BODY}|6|2c2`, 0.25],
+    [["custom", 0.2, [3, 0]], "8|1|1e1,1,1e3,1,1e1,1,1e3,1e3|64", 0.25],
+    [["sine", 0.2, [1, 0]], "8|1|1e1,3,1e1,3|68", 0.25]
 ]
 
 export const SPRITE_PTC = createSprite("ptc", 3, 3, 1)

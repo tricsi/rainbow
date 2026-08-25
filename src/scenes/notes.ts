@@ -42,7 +42,7 @@ const container = () => getEntity("/sheet")!
 const line = (entity: TEntity) => getEntity("line", entity)!
 
 let context: AudioContext | undefined
-let currentTime: number = 0
+let currentTime: number = 70
 
 function getCurrentTime() {
     return currentTime - (context?.outputLatency ?? 0)
@@ -106,7 +106,7 @@ export function stopNotes() {
 
 export function playNotes() {
     mixer("music", 0.8)
-    const music = play("theme", false, "music")
+    const music = play("theme", false, "music", currentTime)
     context = music?.context as AudioContext | undefined;
     music?.addEventListener("ended", async () => {
         await timer(1)
