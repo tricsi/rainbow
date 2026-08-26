@@ -1,11 +1,24 @@
-import { FONT_REGULAR, ID_SCORE, ID_MULTI, COLOR_BLACK, ID_COIN, DARK_YELLOW, DARK_CYAN, LIGHT_CYAN, LIGHT_YELLOW, COLOR_RAINBOW } from "../config"
+import {
+    FONT_REGULAR,
+    ID_SCORE,
+    ID_MULTI,
+    COLOR_BLACK,
+    ID_COIN,
+    LIGHT_CYAN,
+    LIGHT_YELLOW,
+    COLOR_RAINBOW
+} from "../config"
+import { playAnim } from "../modules/entity/components/anim";
 import { setVisible } from "../modules/entity/components/color"
 import { setText } from "../modules/entity/components/text"
 import { addEntity, createEntity, getEntity, TEntityProps } from "../modules/entity/entity"
 import { on, TEvent } from "../modules/event"
-import { max, round } from "../modules/math";
-import { schedule, unschedule } from "../modules/scheduler";
+import { max, round } from "../modules/math"
+import { schedule, unschedule } from "../modules/scheduler"
 
+const  levels = [0, 2500, 10000]
+
+let level = 0
 let allBtn = 0
 let activeIdx = 0
 let scoreValue = 0
@@ -15,22 +28,40 @@ let counterStart = 0
 
 const hudPrefab: TEntityProps = [
     "hud",
-    {},
+    ,
     [
-        ["logo" , {t: [,[45, 3], 1.6], x: [FONT_REGULAR, "Sleepy on\n\nRoad", 1]}, "Rainbow".split("").map((c, i) => [
-            c, {t: [, [i * 6 - 21, 8]], x: [FONT_REGULAR, c], c: COLOR_RAINBOW[i]}
-        ])],
-        ["uni", { t: [[55, 0], [144, 1]], s: ["uni", 55, 54, 0, 2], a: [[[0], [1], [2, 3, 4, 3]], 10, 0, 2]}],
+        [
+            "logo",
+            { t: [, [45, 3], 1.6], x: [FONT_REGULAR, "Sleepy on\n\nRoad", 1] },
+            "Rainbow"
+                .split("")
+                .map((c, i) => [
+                    c,
+                    { t: [, [i * 6 - 21, 8]], x: [FONT_REGULAR, c], c: COLOR_RAINBOW[i] }
+                ])
+        ],
+        [
+            "uni",
+            {
+                t: [
+                    [55, 0],
+                    [144, 1]
+                ],
+                s: ["uni", 55, 54],
+                a: [[[0], [1], [2, 3, 4, 3]], 10]
+            }
+        ],
         ["streak", { x: [FONT_REGULAR, , 0, 0], t: [, [6, 43], 1], c: LIGHT_CYAN }],
         ["score", { x: [FONT_REGULAR, , 0, 0], t: [, [22, 43], 1], c: LIGHT_YELLOW }],
-        ["tap", { x: [FONT_REGULAR, ID_COIN, 1, 1], t:[, [72, 150], 1.2] }],
-        ["bg", { p: [[0, 0, 144, 54]], c: COLOR_BLACK} ],
+        ["tap", { x: [FONT_REGULAR, ID_COIN, 1, 1], t: [, [72, 150], 1.2] }],
+        ["bg", { p: [[0, 0, 144, 54]], c: COLOR_BLACK }]
     ]
 ]
 
 const streakText = () => getEntity("hud/streak")!
 const scoreText = () => getEntity("hud/score")!
 const tapText = () => getEntity("hud/tap")!
+const unicorn = () => getEntity("hud/uni")!
 
 function multiplier() {
     if (streakValue >= 15) return 8
@@ -47,10 +78,10 @@ function onHit([data]: TEvent<number[]>) {
     if (allBtn === btn) {
         counter = idx
         counterStart = performance.now()
-        scoreValue += multiplier() * 25
     } else {
         streakValue = max(streakValue - 1, 0)
     }
+    scoreValue += multiplier() * 25
     activeIdx = idx
 }
 
@@ -66,11 +97,16 @@ function onRelease([data]: TEvent<number[]>) {
 }
 
 function update(delta: number) {
-    if (counter === activeIdx && performance.now() - counterStart > 300) {
+    if (counter === activeIdx && performance.now() - counterStart > 200) {
         scoreValue += delta * multiplier() * 5
     }
     setText(streakText(), ID_MULTI + multiplier())
     setText(scoreText(), ID_SCORE + String(round(scoreValue)).padStart(6, "0"))
+    const newLevel = levels.reduce((value, score, index) => score > scoreValue ? value : index, level)
+    if (level !== newLevel) {
+        playAnim(unicorn(), [newLevel])
+        level = newLevel
+    }
 }
 
 function onStart() {

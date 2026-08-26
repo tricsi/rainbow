@@ -7,11 +7,10 @@ import {
     DARK_RED,
     COLOR_WHITE,
     DARK_YELLOW,
-    SPRITE_PTC
 } from "../config"
 import { setColor } from "../modules/entity/components/color"
 import { isHover } from "../modules/entity/components/polygon"
-import { setPosition, setRotate, setScale } from "../modules/entity/components/transform"
+import { setPosition, setScale } from "../modules/entity/components/transform"
 import {
     addEntity,
     createEntity,
@@ -19,7 +18,6 @@ import {
     getData,
     getEntity,
     getName,
-    removeEntity,
     setData,
     TEntity
 } from "../modules/entity/entity"
@@ -73,7 +71,7 @@ async function emitParticles(index: number) {
                 ,
                 {
                     t: [[1.5, 1.5]],
-                    b: [[0, 100]],
+                    b: [[0, 250]],
                     s: ["ptc", 3, 3, 1, 1],
                     c: COLOR_HIGH
                 }
@@ -110,9 +108,10 @@ async function setButton(index: number, down: boolean) {
             setColor(bg, isHit ? COLOR_HIGH : DARK_GREY)
             isHit && emitParticles(index)
             await timer(len)
+        } else {
+            setColor(bg, COLOR_WHITE)
         }
         emit("release", [idx, id, btn, gap])
-        setColor(bg, COLOR_WHITE)
     }
 }
 

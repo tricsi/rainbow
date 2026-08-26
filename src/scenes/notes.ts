@@ -109,6 +109,7 @@ export function playNotes() {
     const music = play("theme", false, "music", currentTime)
     context = music?.context as AudioContext | undefined;
     music?.addEventListener("ended", async () => {
+        emit("ending")
         await timer(1)
         stopNotes()
     })
