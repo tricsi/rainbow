@@ -14,9 +14,10 @@ import { setText } from "../modules/entity/components/text"
 import { addEntity, createEntity, getEntity, TEntityProps } from "../modules/entity/entity"
 import { on, TEvent } from "../modules/event"
 import { max, round } from "../modules/math"
-import { schedule, unschedule } from "../modules/scheduler"
+import { kill, schedule, timer, TTimerToken, unschedule } from "../modules/scheduler"
 
-const  levels = [0, 2500, 10000]
+const levels = [0, 2500, 10000]
+const idleToken: TTimerToken = [1]
 
 let level = 0
 let allBtn = 0
@@ -109,18 +110,24 @@ function update(delta: number) {
     }
 }
 
+function idle() {
+    idleToken[1] = 0
+    timer(0.5, (_, i) => setVisible(tapText(), i % 2), Number.POSITIVE_INFINITY, idleToken)
+}
+
 function onStart() {
     allBtn = 0
     activeIdx = 0
     scoreValue = 0
     streakValue = 0
     schedule(update)
+    kill(idleToken)
     setVisible(tapText(), 0)
 }
 
 function onEnd() {
     unschedule(update)
-    setVisible(tapText(), 1)
+    idle()
 }
 
 export function initHud() {
@@ -131,4 +138,5 @@ export function initHud() {
     on("miss", onMiss)
     on("release", onRelease)
     update(0)
+    idle()
 }

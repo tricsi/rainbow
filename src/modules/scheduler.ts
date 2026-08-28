@@ -96,9 +96,8 @@ export function timer(
                 update?.(0, ++index)
             }
             if (time <= 0 || skip) {
-                unschedule(token[2] as TTask)
+                kill(token)
                 update?.(1, index)
-                resolve()
             } else {
                 update?.(1 - time / sec, index)
             }
@@ -114,14 +113,13 @@ export function timer(
  * @param props - The timer token to kill.
  * @param force - If true, forcibly unschedules the timer's task.
  */
-export function kill(props: TTimerToken) {
+export function kill(props: TTimerToken, force: boolean = true) {
     props[1] = 1
-    if (props[2]) {
-        props[2](Number.MAX_VALUE)
-        unschedule(props[2])
+    if (force) {
+        props[2] && unschedule(props[2])
+        props[3]?.()
+        props[2] = props[3] = undefined
     }
-    props[3]?.()
-    props[2] = props[3] = undefined
 }
 
 on("visibilitychange", () => DOC.hidden || reset(), DOC)

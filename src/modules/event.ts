@@ -56,6 +56,23 @@ export function off(
 }
 
 /**
+ * Registers one time event listener for one or more event names.
+ *
+ * @param event - The event name(s), separated by spaces or special characters.
+ * @param listener - The callback function to invoke when the event is emitted.
+ * @param listeners - Optional custom listeners map or EventTarget; defaults to internal map.
+ * @returns The `once` function for chaining.
+ */
+export function once(event: string, listener: TListener, listeners: any = defaultListeners) {
+    const callback: TListener = (e) => {
+        off(event, callback)
+        listener(e)
+    }
+    on(event, callback, listeners)
+    return once
+}
+
+/**
  * Emits an event, invoking all listeners registered for the event name and for "all".
  *
  * @param name - The event name to emit.

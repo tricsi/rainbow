@@ -42,7 +42,7 @@ const container = () => getEntity("/sheet")!
 const line = (entity: TEntity) => getEntity("line", entity)!
 
 let context: AudioContext | undefined
-let currentTime: number = 70
+let currentTime: number = 0
 
 function getCurrentTime() {
     return currentTime - (context?.outputLatency ?? 0)

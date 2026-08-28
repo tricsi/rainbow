@@ -1,4 +1,4 @@
-import { TEvent } from "./../modules/event"
+import { on, once, TEvent } from "./../modules/event"
 import { CENTER, FONT_REGULAR, ID_LOADING, ID_PRESS, THEME_MUSIC } from "../config"
 import {
     addEntity,
@@ -7,7 +7,6 @@ import {
     removeEntity,
     TEntityProps
 } from "../modules/entity/entity"
-import { off, on } from "../modules/event"
 import { setText } from "../modules/entity/components/text"
 import { audio, mixer, music, play, sound } from "../modules/audio"
 import { DOC } from "../modules/utils"
@@ -24,7 +23,7 @@ const text = () => getEntity("load/text")!
 
 export function initLoad() {
     addEntity(createEntity(prefab))
-    on("up", onClick)
+    once("up", onClick)
 }
 
 async function initAudio() {
@@ -36,7 +35,6 @@ async function initAudio() {
 }
 
 async function onClick() {
-    off("up", onClick)
     setText(text(), ID_LOADING)
     await initAudio()
     await timer(0.5)

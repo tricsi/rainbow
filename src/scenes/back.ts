@@ -1,5 +1,5 @@
 import { COLOR_RAINBOW } from "../config"
-import { setSpeed } from "../modules/entity/components/body";
+import { setSpeed } from "../modules/entity/components/body"
 import { setAlpha } from "../modules/entity/components/color"
 import {
     getPosition,
