@@ -18,9 +18,10 @@ import {
     TEntity,
     TEntityProps
 } from "../modules/entity/entity"
-import { emit } from "../modules/event";
-import { abs, max } from "../modules/math";
+import { emit, on } from "../modules/event"
+import { abs, max } from "../modules/math"
 import { schedule, timer, unschedule } from "../modules/scheduler"
+import { DOC } from "../modules/utils"
 
 const notePrefab: TEntityProps = [
     ,
@@ -28,14 +29,20 @@ const notePrefab: TEntityProps = [
         c: COLOR_TRANSPARENT
     },
     [
-        ["btn", {
-            t: [[16, 16]],
-            s: ["btn", 32, 32, 0, 1]
-        }],
-        ["line", {
-            t: [[1.5, 3],,[2, 30]],
-            s: SPRITE_PTC
-        }],
+        [
+            "btn",
+            {
+                t: [[16, 16]],
+                s: ["btn", 32, 32, 0, 1]
+            }
+        ],
+        [
+            "line",
+            {
+                t: [[1.5, 3], , [2, 30]],
+                s: SPRITE_PTC
+            }
+        ]
     ]
 ]
 const container = () => getEntity("/sheet")!
@@ -43,6 +50,7 @@ const line = (entity: TEntity) => getEntity("line", entity)!
 
 let context: AudioContext | undefined
 let currentTime: number = 0
+let music: AudioBufferSourceNode | null = null
 
 function getCurrentTime() {
     return currentTime - (context?.outputLatency ?? 0)
@@ -104,22 +112,35 @@ export function stopNotes() {
     emit("end")
 }
 
-export function playNotes() {
+export function playNotes(restart: boolean = false) {
     mixer("music", 0.8)
-    const music = play("theme", false, "music", currentTime)
-    context = music?.context as AudioContext | undefined;
+    music = play("theme", false, "music", currentTime)
+    context = music?.context as AudioContext | undefined
     music?.addEventListener("ended", async () => {
-        emit("ending")
-        await timer(1)
-        stopNotes()
+        if (!DOC.hidden) {
+            emit("ending")
+            await timer(1)
+            stopNotes()
+        }
     })
-    schedule(update)
+    if (!restart) {
+        schedule(update)
+        emit("start")
+    }
     update(0)
-    emit("start")
+}
+
+function onVisibilityChange() {
+    if (DOC.hidden) {
+        music?.stop()
+        return
+    }
+    playNotes(true)
 }
 
 export function initNotes() {
     for (let i = 0; i < 7; i++) {
         addEntity(createEntity(notePrefab), container())
     }
+    on("visibilitychange", onVisibilityChange, DOC)
 }
