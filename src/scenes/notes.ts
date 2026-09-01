@@ -61,12 +61,12 @@ export function getCurrentData(threshold: number = 0.12) {
     let idx = 0
     for (const [btn, len, time] of BUTTON_DATA) {
         const gap = abs(currentTime - time)
-        if (gap <= threshold) {
+        if (gap <= threshold || time - threshold > currentTime) {
             return [idx, btn, len, gap]
         }
         btn && idx++
     }
-    return [0, 0, 0, 0]
+    return [idx, 0, 0, 0]
 }
 
 function update(delta: number) {

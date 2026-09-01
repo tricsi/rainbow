@@ -135,8 +135,7 @@ function onStart() {
     allBtn = 0
     activeIdx = 0
     scoreValue = 0
-    streakValue = 0
-    multiValue = 0
+    onMiss()
     schedule(update)
     kill(idleToken)
     setVisible(tapText(), 0)
