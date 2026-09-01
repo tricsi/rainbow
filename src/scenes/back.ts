@@ -1,14 +1,16 @@
 import { COLOR_RAINBOW } from "../config"
 import { setSpeed } from "../modules/entity/components/body"
-import { setAlpha } from "../modules/entity/components/color"
+import { setAlpha, setColor } from "../modules/entity/components/color"
+import { setFrame } from "../modules/entity/components/sprite";
 import {
     getPosition,
     getScaleX,
     setPivot,
-    setPosition
+    setPosition,
+    setScale
 } from "../modules/entity/components/transform"
 import { addEntity, createEntity, getChildren, getEntity } from "../modules/entity/entity"
-import { on } from "../modules/event"
+import { on, TEvent } from "../modules/event"
 import { floor, irnd, rnd } from "../modules/math"
 import { schedule, timer } from "../modules/scheduler"
 
@@ -19,6 +21,10 @@ function update() {
     for (const child of particles()) {
         const [x, y] = getPosition(child)
         if (y > 220) {
+            const scale = rnd(0.6) + 0.4
+            setAlpha(child, scale)
+            setScale(child, scale)
+            setFrame(child, irnd(8))
             setPosition(child, x, y - 220)
         }
     }
@@ -28,10 +34,18 @@ function updateSpeed(t: number) {
     particles().forEach((c) => setSpeed(c, 0, getScaleX(c) * 100 * t))
 }
 
+async function onHit() {
+    await timer(0.2, (t) => setColor(bg(), [2 - t, 2 - t, 2 - t]))
+}
+
 async function onMiss() {
     const container = bg()
     await timer(0.2, () => setPivot(container, rnd(4) - 2, rnd(4) - 2))
     setPivot(container, 0, 0)
+}
+
+function onMulti([multi]: TEvent<number>) {
+    setAlpha(bg(), (multi + 2) / 10)
 }
 
 function onStart() {
@@ -41,6 +55,7 @@ function onStart() {
 function onEnding() {
     timer(1, (t) => updateSpeed(1 - t))
 }
+
 
 export function initBg() {
     rnd.seed = 5
@@ -61,8 +76,11 @@ export function initBg() {
         setAlpha(entity, scale)
         addEntity(entity, container)
     }
+    on("hit", onHit)
     on("miss", onMiss)
+    on("multi", onMulti)
     on("start", onStart)
     on("ending", onEnding)
     schedule(update)
+    update()
 }

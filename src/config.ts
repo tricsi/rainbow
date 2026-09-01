@@ -116,7 +116,6 @@ export const COLOR_RAINBOW = [
     LIGHT_PURPLE
 ]
 
-export const ID_COIN = "Insert coin"
 export const ID_PRESS = "Press to start"
 export const ID_LOADING = "Loading..."
 export const ID_MULTI = "X"

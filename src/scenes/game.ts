@@ -22,7 +22,7 @@ const gamePrefab: TEntityProps = [
         ["frame", { t: [, [-72, -75]], m: map, c: DARK_GREY }],
         ["mask", { p: [[-72, 109, 144, 18]], c: COLOR_BLACK }],
         ["sheet", { t: [, [-51, 110]] }],
-        ["bg", { t:[, [-72, -110]], c: [1, 1, 1, 0.5]}],
+        ["bg", { t:[, [-72, -110]], c: [1, 1, 1, 0.2]}],
     ]
 ]
 

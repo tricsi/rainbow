@@ -3,18 +3,19 @@ import {
     ID_SCORE,
     ID_MULTI,
     COLOR_BLACK,
-    ID_COIN,
     LIGHT_CYAN,
     LIGHT_YELLOW,
-    COLOR_RAINBOW
+    COLOR_RAINBOW,
+    ID_PRESS
 } from "../config"
-import { playAnim } from "../modules/entity/components/anim";
+import { playAnim } from "../modules/entity/components/anim"
 import { setVisible } from "../modules/entity/components/color"
 import { setText } from "../modules/entity/components/text"
 import { addEntity, createEntity, getEntity, TEntityProps } from "../modules/entity/entity"
-import { on, TEvent } from "../modules/event"
+import { emit, on, TEvent } from "../modules/event"
 import { max, round } from "../modules/math"
 import { kill, schedule, timer, TTimerToken, unschedule } from "../modules/scheduler"
+import { getCurrentData } from "./notes"
 
 const levels = [0, 2500, 10000]
 const idleToken: TTimerToken = [1]
@@ -24,6 +25,7 @@ let allBtn = 0
 let activeIdx = 0
 let scoreValue = 0
 let streakValue = 0
+let multiValue = 0
 let counter = -1
 let counterStart = 0
 
@@ -54,7 +56,7 @@ const hudPrefab: TEntityProps = [
         ],
         ["streak", { x: [FONT_REGULAR, , 0, 0], t: [, [6, 43], 1], c: LIGHT_CYAN }],
         ["score", { x: [FONT_REGULAR, , 0, 0], t: [, [22, 43], 1], c: LIGHT_YELLOW }],
-        ["tap", { x: [FONT_REGULAR, ID_COIN, 1, 1], t: [, [72, 150], 1.2] }],
+        ["tap", { x: [FONT_REGULAR, ID_PRESS, 1, 1], t: [, [72, 150], 1.2] }],
         ["bg", { p: [[0, 0, 144, 54]], c: COLOR_BLACK }]
     ]
 ]
@@ -82,12 +84,19 @@ function onHit([data]: TEvent<number[]>) {
     } else {
         streakValue = max(streakValue - 1, 0)
     }
-    scoreValue += multiplier() * 25
+    const multi = multiplier()
+    if (multiValue !== multi) {
+        multiValue = multi
+        emit("multi", multiValue)
+    }
+    scoreValue += multiValue * 25
     activeIdx = idx
 }
 
 function onMiss() {
     streakValue = 0
+    multiValue = 1
+    emit("multi", multiValue)
 }
 
 function onRelease([data]: TEvent<number[]>) {
@@ -98,12 +107,19 @@ function onRelease([data]: TEvent<number[]>) {
 }
 
 function update(delta: number) {
-    if (counter === activeIdx && performance.now() - counterStart > 200) {
-        scoreValue += delta * multiplier() * 5
+    const [idx] = getCurrentData()
+    if (idx - activeIdx > 1) {
+        onMiss()
     }
-    setText(streakText(), ID_MULTI + multiplier())
+    if (counter === activeIdx && performance.now() - counterStart > 200) {
+        scoreValue += delta * multiValue * 5
+    }
+    setText(streakText(), ID_MULTI + multiValue)
     setText(scoreText(), ID_SCORE + String(round(scoreValue)).padStart(6, "0"))
-    const newLevel = levels.reduce((value, score, index) => score > scoreValue ? value : index, level)
+    const newLevel = levels.reduce(
+        (value, score, index) => (score > scoreValue ? value : index),
+        level
+    )
     if (level !== newLevel) {
         playAnim(unicorn(), [newLevel])
         level = newLevel
@@ -120,6 +136,7 @@ function onStart() {
     activeIdx = 0
     scoreValue = 0
     streakValue = 0
+    multiValue = 0
     schedule(update)
     kill(idleToken)
     setVisible(tapText(), 0)

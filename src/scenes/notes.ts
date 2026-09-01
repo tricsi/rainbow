@@ -45,18 +45,18 @@ const notePrefab: TEntityProps = [
         ]
     ]
 ]
-const container = () => getEntity("/sheet")!
-const line = (entity: TEntity) => getEntity("line", entity)!
 
-let context: AudioContext | undefined
 let currentTime: number = 0
 let music: AudioBufferSourceNode | null = null
 
+const container = () => getEntity("/sheet")!
+const line = (entity: TEntity) => getEntity("line", entity)!
+
 function getCurrentTime() {
-    return currentTime - (context?.outputLatency ?? 0)
+    return currentTime - ((music?.context as AudioContext)?.outputLatency ?? 0)
 }
 
-export function getCurrentData(threshold: number) {
+export function getCurrentData(threshold: number = 0.12) {
     const currentTime = getCurrentTime()
     let idx = 0
     for (const [btn, len, time] of BUTTON_DATA) {
@@ -109,13 +109,13 @@ function update(delta: number) {
 export function stopNotes() {
     unschedule(update)
     currentTime = 0
+    music = null
     emit("end")
 }
 
 export function playNotes(restart: boolean = false) {
     mixer("music", 0.8)
     music = play("theme", false, "music", currentTime)
-    context = music?.context as AudioContext | undefined
     music?.addEventListener("ended", async () => {
         if (!DOC.hidden) {
             emit("ending")
@@ -131,11 +131,7 @@ export function playNotes(restart: boolean = false) {
 }
 
 function onVisibilityChange() {
-    if (DOC.hidden) {
-        music?.stop()
-        return
-    }
-    playNotes(true)
+    DOC.hidden ? music?.stop() : music && playNotes(true)
 }
 
 export function initNotes() {

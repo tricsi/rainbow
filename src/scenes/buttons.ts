@@ -100,7 +100,7 @@ async function setButton(index: number, down: boolean) {
         const id = parseInt(getName(entity))
         const up = getEntity("up", entity)!
         const bg = getEntity("bg", entity)!
-        const [idx, btn, len, gap] = getCurrentData(0.12)
+        const [idx, btn, len, gap] = getCurrentData()
         setScale(up, down ? 0.9 : 1)
         if (down) {
             const isHit = id & btn
