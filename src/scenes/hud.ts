@@ -1,3 +1,4 @@
+import { ID_HISCORE } from './../config';
 import {
     FONT_REGULAR,
     ID_SCORE,
@@ -19,6 +20,7 @@ import { addEntity, createEntity, getEntity, TEntityProps } from "../modules/ent
 import { emit, on, TEvent } from "../modules/event"
 import { max, round } from "../modules/math"
 import { kill, schedule, timer, TTimerToken, unschedule } from "../modules/scheduler"
+import { storage } from "../modules/utils";
 import { getCurrentData } from "./notes"
 
 const levels = [0, 2500, 10000]
@@ -27,7 +29,12 @@ const idleToken: TTimerToken = [1]
 let level = 0
 let allBtn = 0
 let activeIdx = 0
+let scoreNew = 0
+let scoreBest = storage("sc") ?? 0
 let scoreValue = 0
+let streakNew = 0
+let streakMax = 0
+let streakBest = storage("st") ?? 0
 let streakValue = 0
 let multiValue = 1
 let counter = -1
@@ -59,8 +66,8 @@ const hudPrefab: TEntityProps = [
                 c: COLOR_TRANSPARENT
             }
         ],
-        ["multi", { x: [FONT_REGULAR, , 0, 0], t: [, [10, 44], 1], c: LIGHT_CYAN }],
-        ["score", { x: [FONT_REGULAR, , 0, 0], t: [, [26, 44], 1], c: LIGHT_YELLOW }],
+        ["score", { x: [FONT_REGULAR, , 0, 0], t: [, [2, 44], 1], c: LIGHT_YELLOW }],
+        ["multi", { x: [FONT_REGULAR, , 2, 0], t: [, [86, 44], 1], c: LIGHT_CYAN }],
         ["tap", { x: [FONT_REGULAR, ID_PRESS_LOAD, 1, 1], t: [, [72, 150], 1.2] }],
         ["bg", { p: [[0, 0, 144, 54]], c: COLOR_BLACK }]
     ]
@@ -96,6 +103,15 @@ function onHit([data]: TEvent<number[]>) {
         emit("multi", multiValue)
     }
     scoreValue += multiValue * 25
+    if (scoreValue > scoreBest) {
+        scoreBest = storage("sc", scoreValue)
+        scoreNew = 1
+    }
+    streakMax = max(streakMax, streakValue)
+    if (streakMax > streakBest) {
+        streakBest = storage("st", streakMax)
+        streakNew = 1
+    }
     activeIdx = idx
 }
 
@@ -120,8 +136,8 @@ function update(delta: number) {
     if (counter === activeIdx && performance.now() - counterStart > 200) {
         scoreValue += delta * multiValue * 5
     }
-    setText(multiText(), ID_MULTI + multiValue)
-    setText(scoreText(), ID_SCORE + String(round(scoreValue)).padStart(6, "0"))
+    setText(multiText(), String(streakValue).padStart(3, "0") + ID_MULTI + multiValue)
+    setText(scoreText(), (scoreNew ? ID_HISCORE : ID_SCORE) + String(round(scoreValue)).padStart(6, "0"))
     const newLevel = levels.reduce(
         (value, score, index) => (score > scoreValue ? value : index),
         level
@@ -141,6 +157,9 @@ function idle() {
 function onStart() {
     allBtn = 0
     activeIdx = 0
+    streakMax = 0
+    streakNew = 0
+    scoreNew = 0
     scoreValue = 0
     onMiss()
     schedule(update)
