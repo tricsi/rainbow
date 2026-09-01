@@ -56,6 +56,10 @@ function onEnding() {
     timer(1, (t) => updateSpeed(1 - t))
 }
 
+function onEnd() {
+    setAlpha(bg(), 0.3)
+}
+
 
 export function initBg() {
     rnd.seed = 5
@@ -81,6 +85,7 @@ export function initBg() {
     on("multi", onMulti)
     on("start", onStart)
     on("ending", onEnding)
+    on("end", onEnd)
     schedule(update)
     update()
 }

@@ -1,4 +1,4 @@
-import { ID_HISCORE } from './../config';
+import { ID_HISCORE, ID_TABLE, SCORE_TABLE } from "./../config"
 import {
     FONT_REGULAR,
     ID_SCORE,
@@ -7,9 +7,9 @@ import {
     LIGHT_CYAN,
     LIGHT_YELLOW,
     COLOR_RAINBOW,
-    ID_PRESS_START,
+    ID_COIN,
     ID_LOADING,
-    ID_PRESS_LOAD,
+    ID_PRESS,
     COLOR_TRANSPARENT
 } from "../config"
 import { playAnim } from "../modules/entity/components/anim"
@@ -20,7 +20,7 @@ import { addEntity, createEntity, getEntity, TEntityProps } from "../modules/ent
 import { emit, on, TEvent } from "../modules/event"
 import { max, round } from "../modules/math"
 import { kill, schedule, timer, TTimerToken, unschedule } from "../modules/scheduler"
-import { storage } from "../modules/utils";
+import { storage } from "../modules/utils"
 import { getCurrentData } from "./notes"
 
 const levels = [0, 2500, 10000]
@@ -46,7 +46,7 @@ const hudPrefab: TEntityProps = [
     [
         [
             "logo",
-            { t: [, [72, 53], 2], x: [FONT_REGULAR, "Sleepy on\n\nRoad", 1] },
+            { t: [, [72, 83], 2], x: [FONT_REGULAR, "Sleepy on\n\nRoad", 1] },
             "Rainbow"
                 .split("")
                 .map((c, i) => [
@@ -68,7 +68,12 @@ const hudPrefab: TEntityProps = [
         ],
         ["score", { x: [FONT_REGULAR, , 0, 0], t: [, [2, 44], 1], c: LIGHT_YELLOW }],
         ["multi", { x: [FONT_REGULAR, , 2, 0], t: [, [86, 44], 1], c: LIGHT_CYAN }],
-        ["tap", { x: [FONT_REGULAR, ID_PRESS_LOAD, 1, 1], t: [, [72, 150], 1.2] }],
+        [
+            "table",
+            { x: [FONT_REGULAR, ID_TABLE, 1, 0], t: [, [72, 70]], c: COLOR_TRANSPARENT },
+            SCORE_TABLE.map(createRow)
+        ],
+        ["tap", { x: [FONT_REGULAR, ID_PRESS, 1, 1], t: [, [72, 205], 1] }],
         ["bg", { p: [[0, 0, 144, 54]], c: COLOR_BLACK }]
     ]
 ]
@@ -77,7 +82,33 @@ const multiText = () => getEntity("hud/multi")!
 const scoreText = () => getEntity("hud/score")!
 const tapText = () => getEntity("hud/tap")!
 const unicorn = () => getEntity("hud/uni")!
+const table = () => getEntity("hud/table")!
 const logo = () => getEntity("hud/logo")!
+
+function createRow([id, st, sc]: [string, number, number], y: number): TEntityProps {
+    return [
+        "id",
+        { t: [, [-20, y * 10 + 20]], x: [FONT_REGULAR, `${y + 1}. ${id}`, 2] },
+        [
+            [
+                "st",
+                {
+                    t: [, [20, 0]],
+                    x: [FONT_REGULAR, String(st).padStart(3, "0"), 1],
+                    c: LIGHT_CYAN
+                }
+            ],
+            [
+                "sc",
+                {
+                    t: [, [70, 0]],
+                    x: [FONT_REGULAR, String(sc).padStart(5, "0"), 2],
+                    c: LIGHT_YELLOW
+                }
+            ]
+        ]
+    ]
+}
 
 function multiplier() {
     if (streakValue >= 15) return 8
@@ -137,7 +168,10 @@ function update(delta: number) {
         scoreValue += delta * multiValue * 5
     }
     setText(multiText(), String(streakValue).padStart(3, "0") + ID_MULTI + multiValue)
-    setText(scoreText(), (scoreNew ? ID_HISCORE : ID_SCORE) + String(round(scoreValue)).padStart(6, "0"))
+    setText(
+        scoreText(),
+        (scoreNew ? ID_HISCORE : ID_SCORE) + String(round(scoreValue)).padStart(5, "0")
+    )
     const newLevel = levels.reduce(
         (value, score, index) => (score > scoreValue ? value : index),
         level
@@ -150,7 +184,7 @@ function update(delta: number) {
 
 function idle() {
     idleToken[1] = 0
-    setText(tapText(), ID_PRESS_START)
+    setText(tapText(), ID_COIN)
     timer(0.5, (_, i) => setVisible(tapText(), i % 2), Number.POSITIVE_INFINITY, idleToken)
 }
 
@@ -165,10 +199,12 @@ function onStart() {
     schedule(update)
     kill(idleToken)
     setVisible(tapText(), 0)
+    timer(0.3, t => setAlpha(table(), 1 - t))
 }
 
 function onEnd() {
     unschedule(update)
+    timer(0.3, t => setAlpha(table(), t))
     idle()
 }
 
@@ -183,7 +219,8 @@ export async function introHud() {
         setAlpha(multiText(), t)
         setAlpha(scoreText(), t)
         setAlpha(unicorn(), t)
-        setPosition(logo(), 45 + tt * 27, 3 + tt * 50)
+        setAlpha(table(), t)
+        setPosition(logo(), 45 + tt * 27, 3 + tt * 80)
         setScale(logo(), 1.6 + tt * 0.4)
     })
     on("start", onStart)

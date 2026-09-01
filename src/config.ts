@@ -83,6 +83,19 @@ export const THEME_MUSIC: TChannelProps[] = [
     [["sine", 0.2, [1, 0]], "8|1|1e1,3,1e1,3|68", 0.25]
 ]
 
+export const SCORE_TABLE: [string, number, number][] = [
+    ["GOD", 260, 55000],
+    ["NEO", 250, 45000],
+    ["DEV", 200, 40000],
+    ["DBD", 150, 30000],
+    ["POT", 100, 25000],
+    ["HAR", 75, 20000],
+    ["SLY", 50, 15000],
+    ["DUR", 25, 10000],
+    ["PUG", 15, 5000],
+    ["NOB", 5, 2500],
+]
+
 export const SPRITE_PTC = createSprite("ptc", 3, 3, 1)
 export const SPRITE_FRAME = createSprite("frame", 12, 12, 1)
 export const FONT_REGULAR = createSprite("font", 5, 7)
@@ -117,9 +130,10 @@ export const COLOR_RAINBOW = [
 ]
 
 
-export const ID_PRESS_START = "Press to start"
-export const ID_PRESS_LOAD = "Press to load"
+export const ID_COIN = "Inser coin"
+export const ID_PRESS = "Press to start"
 export const ID_LOADING = "Loading..."
 export const ID_MULTI = "X"
 export const ID_SCORE = "SC:"
 export const ID_HISCORE = "HI:"
+export const ID_TABLE = "HIGH SCORES"
