@@ -19,6 +19,8 @@ function parseData(sheet: string, tempo: number): number[][] {
         })
 }
 
+export type THightScore = [string, number, number]
+
 const BUTTON_BASS = "21,01,41,01,21,01,41,41"
 const BUTTON_CHORDS = "A7,01,67,01,57,01,37,01"
 const BUTTON_CODA = "C7,01,A7,01,57,01,67,01"
@@ -38,11 +40,11 @@ export const BUTTON_DATA: number[][] = parseData(
     `08|1|${BUTTON_BASS}|4|${BUTTON_CHORDS},${BUTTON_VERSE},${BUTTON_CHORDS}|1|${BUTTON_BODY}|2|${BUTTON_VERSE}|1|${BUTTON_CODA}|2|${BUTTON_BODY}|2|${BUTTON_VERSE}|2|13`,
     0.25
 )
-export const WAVE_BASS = [0, 1, 0.8, 0.2, 0.02]
-export const WAVE_BRASS = [0, 0.4, 0.4, 1, 1, 1, 0.3, 0.7, 0.6, 0.5, 0.9, 0.8]
-export const WAVE_CHIPTUNE = wave((n) => (4 / (n * Math.PI)) * Math.sin(Math.PI * n * 0.18))
-export const WAVE_ORGAN = [0, 1, 1, 1, 1, 0, 1, 0, 1, 0, 0, 0, 1]
-export const WAVE_ORGAN2 = [0, 0.8, 0.6, 0.6, 0.7, 0.6, 0, 0.8, 0.3, 1]
+const WAVE_BASS = [0, 1, 0.8, 0.2, 0.02]
+const WAVE_BRASS = [0, 0.4, 0.4, 1, 1, 1, 0.3, 0.7, 0.6, 0.5, 0.9, 0.8]
+const WAVE_CHIPTUNE = wave((n) => (4 / (n * Math.PI)) * Math.sin(Math.PI * n * 0.18))
+const WAVE_ORGAN = [0, 1, 1, 1, 1, 0, 1, 0, 1, 0, 0, 0, 1]
+const WAVE_ORGAN2 = [0, 0.8, 0.6, 0.6, 0.7, 0.6, 0, 0.8, 0.3, 1]
 
 const SONG_BODY =
     "1e4,1e4,1e4,1e4,2,1c4,1c4," +
@@ -83,17 +85,17 @@ export const THEME_MUSIC: TChannelProps[] = [
     [["sine", 0.2, [1, 0]], "8|1|1e1,3,1e1,3|68", 0.25]
 ]
 
-export const SCORE_TABLE: [string, number, number][] = [
+export const SCORE_TABLE: THightScore[] = [
     ["GOD", 260, 55000],
-    ["NEO", 250, 45000],
-    ["DEV", 200, 40000],
-    ["DBD", 150, 30000],
-    ["POT", 100, 25000],
-    ["HAR", 75, 20000],
-    ["SLY", 50, 15000],
-    ["DUR", 25, 10000],
-    ["PUG", 15, 5000],
-    ["NOB", 5, 2500],
+    ["NEO", 200, 50000],
+    ["DEV", 100, 45000],
+    ["DBD", 75, 40000],
+    ["POT", 50, 35000],
+    ["HAR", 40, 30000],
+    ["SLY", 30, 25000],
+    ["DUR", 20, 20000],
+    ["PUG", 10, 15000],
+    ["NOB", 5, 10000],
 ]
 
 export const SPRITE_PTC = createSprite("ptc", 3, 3, 1)

@@ -1,4 +1,5 @@
-import { ID_HISCORE, ID_TABLE, SCORE_TABLE } from "./../config"
+import { getChildren } from "./../modules/entity/entity"
+import { COLOR_WHITE, ID_HISCORE, ID_TABLE, LIGHT_GREEN, LIGHT_PURPLE, SCORE_TABLE, THightScore } from "./../config"
 import {
     FONT_REGULAR,
     ID_SCORE,
@@ -13,7 +14,7 @@ import {
     COLOR_TRANSPARENT
 } from "../config"
 import { playAnim } from "../modules/entity/components/anim"
-import { setAlpha, setVisible } from "../modules/entity/components/color"
+import { setAlpha, setColor, setVisible } from "../modules/entity/components/color"
 import { setText } from "../modules/entity/components/text"
 import { setPosition, setScale } from "../modules/entity/components/transform"
 import { addEntity, createEntity, getEntity, TEntityProps } from "../modules/entity/entity"
@@ -25,16 +26,13 @@ import { getCurrentData } from "./notes"
 
 const levels = [0, 2500, 10000]
 const idleToken: TTimerToken = [1]
+const highScores: THightScore[] = storage("hi") ?? []
 
 let level = 0
 let allBtn = 0
 let activeIdx = 0
-let scoreNew = 0
-let scoreBest = storage("sc") ?? 0
 let scoreValue = 0
-let streakNew = 0
 let streakMax = 0
-let streakBest = storage("st") ?? 0
 let streakValue = 0
 let multiValue = 1
 let counter = -1
@@ -88,13 +86,13 @@ const logo = () => getEntity("hud/logo")!
 function createRow([id, st, sc]: [string, number, number], y: number): TEntityProps {
     return [
         "id",
-        { t: [, [-20, y * 10 + 20]], x: [FONT_REGULAR, `${y + 1}. ${id}`, 2] },
+        { t: [, [-20, y * 10 + 20]], x: [FONT_REGULAR, , 2] },
         [
             [
                 "st",
                 {
                     t: [, [20, 0]],
-                    x: [FONT_REGULAR, String(st).padStart(3, "0"), 1],
+                    x: [FONT_REGULAR, , 1],
                     c: LIGHT_CYAN
                 }
             ],
@@ -102,7 +100,7 @@ function createRow([id, st, sc]: [string, number, number], y: number): TEntityPr
                 "sc",
                 {
                     t: [, [70, 0]],
-                    x: [FONT_REGULAR, String(sc).padStart(5, "0"), 2],
+                    x: [FONT_REGULAR, , 2],
                     c: LIGHT_YELLOW
                 }
             ]
@@ -134,15 +132,7 @@ function onHit([data]: TEvent<number[]>) {
         emit("multi", multiValue)
     }
     scoreValue += multiValue * 25
-    if (scoreValue > scoreBest) {
-        scoreBest = storage("sc", scoreValue)
-        scoreNew = 1
-    }
     streakMax = max(streakMax, streakValue)
-    if (streakMax > streakBest) {
-        streakBest = storage("st", streakMax)
-        streakNew = 1
-    }
     activeIdx = idx
 }
 
@@ -168,10 +158,7 @@ function update(delta: number) {
         scoreValue += delta * multiValue * 5
     }
     setText(multiText(), String(streakValue).padStart(3, "0") + ID_MULTI + multiValue)
-    setText(
-        scoreText(),
-        (scoreNew ? ID_HISCORE : ID_SCORE) + String(round(scoreValue)).padStart(5, "0")
-    )
+    setText(scoreText(), ID_SCORE + String(round(scoreValue)).padStart(5, "0"))
     const newLevel = levels.reduce(
         (value, score, index) => (score > scoreValue ? value : index),
         level
@@ -188,23 +175,45 @@ function idle() {
     timer(0.5, (_, i) => setVisible(tapText(), i % 2), Number.POSITIVE_INFINITY, idleToken)
 }
 
+function saveScore() {
+    highScores.push(["YOU", streakMax, scoreValue])
+    highScores.sort((a: THightScore, b: THightScore) => b[2] - a[2])
+    if (highScores.length > 10) {
+        highScores.length = 10
+    }
+    storage("hi", highScores)
+}
+
+function updateScore() {
+    const score = [...SCORE_TABLE, ...highScores].sort(
+        (a: THightScore, b: THightScore) => b[2] - a[2]
+    )
+    getChildren(table()).forEach((row, i) => {
+        const [id, st, sc] = score[i]
+        setText(row, `${i + 1}. ${id}`)
+        setColor(row, id === "YOU" ? LIGHT_GREEN : COLOR_WHITE)
+        setText(getEntity("st", row)!, String(st).padStart(3, "0"))
+        setText(getEntity("sc", row)!, String(round(sc)).padStart(5, "0"))
+    })
+}
+
 function onStart() {
     allBtn = 0
     activeIdx = 0
     streakMax = 0
-    streakNew = 0
-    scoreNew = 0
     scoreValue = 0
     onMiss()
     schedule(update)
     kill(idleToken)
     setVisible(tapText(), 0)
-    timer(0.3, t => setAlpha(table(), 1 - t))
+    timer(0.3, (t) => setAlpha(table(), 1 - t))
 }
 
 function onEnd() {
     unschedule(update)
-    timer(0.3, t => setAlpha(table(), t))
+    saveScore()
+    updateScore()
+    timer(0.3, (t) => setAlpha(table(), t))
     idle()
 }
 
@@ -235,5 +244,6 @@ export function initHud() {
     addEntity(createEntity(hudPrefab))
     setAlpha(multiText(), 0)
     setAlpha(scoreText(), 0)
+    updateScore()
     update(0)
 }
