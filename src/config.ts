@@ -88,7 +88,7 @@ export const SPRITE_FRAME = createSprite("frame", 12, 12, 1)
 export const FONT_REGULAR = createSprite("font", 5, 7)
 export const CENTER = [72, 128]
 
-export const COLOR_TRANSPARENT = [0, 0, 0, 0]
+export const COLOR_TRANSPARENT = [1, 1, 1, 0]
 export const COLOR_BLACK = [0, 0, 0, 1]
 export const COLOR_WHITE = [1, 1, 1, 1]
 export const COLOR_HIGH = [1.33, 1.33, 1.33, 1]
@@ -116,7 +116,9 @@ export const COLOR_RAINBOW = [
     LIGHT_PURPLE
 ]
 
-export const ID_PRESS = "Press to start"
+
+export const ID_PRESS_START = "Press to start"
+export const ID_PRESS_LOAD = "Press to load"
 export const ID_LOADING = "Loading..."
 export const ID_MULTI = "X"
 export const ID_SCORE = "SC:"

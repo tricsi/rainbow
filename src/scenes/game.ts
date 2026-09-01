@@ -1,11 +1,12 @@
 import { addEntity, createEntity, TEntityProps } from "../modules/entity/entity"
-import { CENTER, COLOR_BLACK, DARK_GREY, SPRITE_FRAME } from "../config"
+import { CENTER, COLOR_BLACK, COLOR_TRANSPARENT, DARK_GREY, SPRITE_FRAME } from "../config"
 import { initButtons } from "./buttons"
 import { off, on } from "../modules/event"
 import { initNotes, playNotes } from "./notes"
-import { initHud } from "./hud"
 import { TSprite } from "../modules/2d/context"
-import { initBg } from "./back";
+import { initBg } from "./back"
+import { timer } from "../modules/scheduler";
+import { setAlpha } from "../modules/entity/components/color";
 
 const map: [TSprite, string, number, number] = [
     SPRITE_FRAME,
@@ -16,13 +17,13 @@ const map: [TSprite, string, number, number] = [
 
 const gamePrefab: TEntityProps = [
     "",
-    { t: [, CENTER] },
+    { t: [, CENTER], c: COLOR_TRANSPARENT },
     [
         ["btn", { t: [, [-51, 109]] }],
         ["frame", { t: [, [-72, -75]], m: map, c: DARK_GREY }],
         ["mask", { p: [[-72, 109, 144, 18]], c: COLOR_BLACK }],
         ["sheet", { t: [, [-51, 110]] }],
-        ["bg", { t:[, [-72, -110]], c: [1, 1, 1, 0.3]}],
+        ["bg", { t: [, [-72, -110]], c: [1, 1, 1, 0.3] }]
     ]
 ]
 
@@ -31,12 +32,13 @@ function onClick() {
     playNotes()
 }
 
-export function initGame() {
-    initHud()
-    addEntity(createEntity(gamePrefab))
+export async function initGame() {
+    const game = createEntity(gamePrefab)
+    addEntity(game)
     initButtons()
     initNotes()
     initBg()
+    await timer(0.5, t => setAlpha(game, t))
     on("up", onClick)
     on("end", () => on("up", onClick))
 }
