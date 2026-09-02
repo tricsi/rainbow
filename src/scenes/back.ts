@@ -1,7 +1,7 @@
 import { COLOR_RAINBOW } from "../config"
 import { setSpeed } from "../modules/entity/components/body"
 import { setAlpha, setColor } from "../modules/entity/components/color"
-import { setFrame } from "../modules/entity/components/sprite";
+import { setFrame } from "../modules/entity/components/sprite"
 import {
     getPosition,
     getScaleX,
@@ -59,7 +59,6 @@ function onEnding() {
 function onEnd() {
     setAlpha(bg(), 0.3)
 }
-
 
 export function initBg() {
     rnd.seed = 5

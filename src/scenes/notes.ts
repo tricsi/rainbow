@@ -20,7 +20,7 @@ import {
 } from "../modules/entity/entity"
 import { emit, on } from "../modules/event"
 import { abs, max } from "../modules/math"
-import { schedule, timer, unschedule } from "../modules/scheduler"
+import { schedule, timer } from "../modules/scheduler"
 import { DOC } from "../modules/utils"
 
 const notePrefab: TEntityProps = [
@@ -70,35 +70,37 @@ export function getCurrentData(threshold: number = 0.12) {
 }
 
 function update(delta: number) {
-    currentTime += delta
     const notes = getChildren(container())
     let i = 0
-    for (const [btn, len, time] of BUTTON_DATA) {
-        const y = (time - getCurrentTime()) * -160
-        const length = max(len * 160 - 32, 0)
-        const scale = length / 3
-        if (i >= notes.length || y > length || y < -256) {
-            continue
-        }
-        if (btn & 1 && notes[i]) {
-            setScale(line(notes[i]), 2, scale)
-            setColor(notes[i], DARK_RED)
-            setPosition(notes[i++], 0, y)
-        }
-        if (btn & 2 && notes[i]) {
-            setScale(line(notes[i]), 2, scale)
-            setColor(notes[i], DARK_YELLOW)
-            setPosition(notes[i++], 34, y)
-        }
-        if (btn & 4 && notes[i]) {
-            setScale(line(notes[i]), 2, scale)
-            setColor(notes[i], DARK_CYAN)
-            setPosition(notes[i++], 68, y)
-        }
-        if (btn & 8 && notes[i]) {
-            setScale(line(notes[i]), 2, scale)
-            setColor(notes[i], DARK_PURPLE)
-            setPosition(notes[i++], 102, y)
+    if (music) {
+        currentTime += delta
+        for (const [btn, len, time] of BUTTON_DATA) {
+            const y = (time - getCurrentTime()) * -160
+            const length = max(len * 160 - 32, 0)
+            const scale = length / 3
+            if (i >= notes.length || y > length || y < -256) {
+                continue
+            }
+            if (btn & 1 && notes[i]) {
+                setScale(line(notes[i]), 2, scale)
+                setColor(notes[i], DARK_RED)
+                setPosition(notes[i++], 0, y)
+            }
+            if (btn & 2 && notes[i]) {
+                setScale(line(notes[i]), 2, scale)
+                setColor(notes[i], DARK_YELLOW)
+                setPosition(notes[i++], 34, y)
+            }
+            if (btn & 4 && notes[i]) {
+                setScale(line(notes[i]), 2, scale)
+                setColor(notes[i], DARK_CYAN)
+                setPosition(notes[i++], 68, y)
+            }
+            if (btn & 8 && notes[i]) {
+                setScale(line(notes[i]), 2, scale)
+                setColor(notes[i], DARK_PURPLE)
+                setPosition(notes[i++], 102, y)
+            }
         }
     }
     for (let j = i; j < notes.length; j++) {
@@ -106,32 +108,29 @@ function update(delta: number) {
     }
 }
 
-export function stopNotes() {
-    unschedule(update)
-    currentTime = 0
-    music = null
-    emit("end")
+export function playNotes(restart: boolean = false) {
+    mixer("music", 1)
+    music = play("theme", false, "music", currentTime)
+    music?.addEventListener("ended", () => stopNotes())
+    emit(restart ? "restart" : "start")
 }
 
-export function playNotes(restart: boolean = false) {
-    mixer("music", 0.8)
-    music = play("theme", false, "music", currentTime)
-    music?.addEventListener("ended", async () => {
-        if (!DOC.hidden) {
+export async function stopNotes(pause: boolean = false) {
+    if (music) {
+        const copy = music
+        music = null
+        if (!pause) {
             emit("ending")
-            await timer(1)
-            stopNotes()
+            await timer(1, (t) => mixer("music", 1 - t))
+            emit("end")
+            currentTime = 0
         }
-    })
-    if (!restart) {
-        schedule(update)
-        emit("start")
+        copy?.stop()
     }
-    update(0)
 }
 
 function onVisibilityChange() {
-    DOC.hidden ? music?.stop() : music && playNotes(true)
+    DOC.hidden ? stopNotes(true) : playNotes(true)
 }
 
 export function initNotes() {
@@ -139,4 +138,5 @@ export function initNotes() {
         addEntity(createEntity(notePrefab), container())
     }
     on("visibilitychange", onVisibilityChange, DOC)
+    schedule(update)
 }

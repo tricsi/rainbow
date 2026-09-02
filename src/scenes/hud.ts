@@ -1,5 +1,3 @@
-import { getChildren } from "./../modules/entity/entity"
-import { COLOR_WHITE, ID_HISCORE, ID_TABLE, LIGHT_GREEN, LIGHT_PURPLE, SCORE_TABLE, THightScore } from "./../config"
 import {
     FONT_REGULAR,
     ID_SCORE,
@@ -14,19 +12,18 @@ import {
     COLOR_TRANSPARENT
 } from "../config"
 import { playAnim } from "../modules/entity/components/anim"
-import { setAlpha, setColor, setVisible } from "../modules/entity/components/color"
+import { setAlpha, setVisible } from "../modules/entity/components/color"
 import { setText } from "../modules/entity/components/text"
 import { setPosition, setScale } from "../modules/entity/components/transform"
 import { addEntity, createEntity, getEntity, TEntityProps } from "../modules/entity/entity"
 import { emit, on, TEvent } from "../modules/event"
 import { max, round } from "../modules/math"
 import { kill, schedule, timer, TTimerToken, unschedule } from "../modules/scheduler"
-import { storage } from "../modules/utils"
 import { getCurrentData } from "./notes"
+import { saveScore, scorePrefab, updateScore } from "./score"
 
 const levels = [0, 2500, 10000]
 const idleToken: TTimerToken = [1]
-const highScores: THightScore[] = storage("hi") ?? []
 
 let level = 0
 let allBtn = 0
@@ -66,11 +63,7 @@ const hudPrefab: TEntityProps = [
         ],
         ["score", { x: [FONT_REGULAR, , 0, 0], t: [, [2, 44], 1], c: LIGHT_YELLOW }],
         ["multi", { x: [FONT_REGULAR, , 2, 0], t: [, [86, 44], 1], c: LIGHT_CYAN }],
-        [
-            "table",
-            { x: [FONT_REGULAR, ID_TABLE, 1, 0], t: [, [72, 70]], c: COLOR_TRANSPARENT },
-            SCORE_TABLE.map(createRow)
-        ],
+        scorePrefab,
         ["tap", { x: [FONT_REGULAR, ID_PRESS, 1, 1], t: [, [72, 205], 1] }],
         ["bg", { p: [[0, 0, 144, 54]], c: COLOR_BLACK }]
     ]
@@ -82,31 +75,6 @@ const tapText = () => getEntity("hud/tap")!
 const unicorn = () => getEntity("hud/uni")!
 const table = () => getEntity("hud/table")!
 const logo = () => getEntity("hud/logo")!
-
-function createRow([id, st, sc]: [string, number, number], y: number): TEntityProps {
-    return [
-        "id",
-        { t: [, [-20, y * 10 + 20]], x: [FONT_REGULAR, , 2] },
-        [
-            [
-                "st",
-                {
-                    t: [, [20, 0]],
-                    x: [FONT_REGULAR, , 1],
-                    c: LIGHT_CYAN
-                }
-            ],
-            [
-                "sc",
-                {
-                    t: [, [70, 0]],
-                    x: [FONT_REGULAR, , 2],
-                    c: LIGHT_YELLOW
-                }
-            ]
-        ]
-    ]
-}
 
 function multiplier() {
     if (streakValue >= 15) return 8
@@ -142,11 +110,8 @@ function onMiss() {
     emit("multi", multiValue)
 }
 
-function onRelease([data]: TEvent<number[]>) {
-    const [idx] = data
-    if (idx === activeIdx) {
-        counter = -1
-    }
+function onRelease() {
+    counter = -1
 }
 
 function update(delta: number) {
@@ -175,28 +140,6 @@ function idle() {
     timer(0.5, (_, i) => setVisible(tapText(), i % 2), Number.POSITIVE_INFINITY, idleToken)
 }
 
-function saveScore() {
-    highScores.push(["YOU", streakMax, scoreValue])
-    highScores.sort((a: THightScore, b: THightScore) => b[2] - a[2])
-    if (highScores.length > 10) {
-        highScores.length = 10
-    }
-    storage("hi", highScores)
-}
-
-function updateScore() {
-    const score = [...SCORE_TABLE, ...highScores].sort(
-        (a: THightScore, b: THightScore) => b[2] - a[2]
-    )
-    getChildren(table()).forEach((row, i) => {
-        const [id, st, sc] = score[i]
-        setText(row, `${i + 1}. ${id}`)
-        setColor(row, id === "YOU" ? LIGHT_GREEN : COLOR_WHITE)
-        setText(getEntity("st", row)!, String(st).padStart(3, "0"))
-        setText(getEntity("sc", row)!, String(round(sc)).padStart(5, "0"))
-    })
-}
-
 function onStart() {
     allBtn = 0
     activeIdx = 0
@@ -211,7 +154,7 @@ function onStart() {
 
 function onEnd() {
     unschedule(update)
-    saveScore()
+    saveScore(streakMax, scoreValue)
     updateScore()
     timer(0.3, (t) => setAlpha(table(), t))
     idle()

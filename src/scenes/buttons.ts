@@ -7,6 +7,8 @@ import {
     DARK_RED,
     COLOR_WHITE,
     DARK_YELLOW,
+    FONT_REGULAR,
+    COLOR_BLACK
 } from "../config"
 import { setColor } from "../modules/entity/components/color"
 import { isHover } from "../modules/entity/components/polygon"
@@ -25,7 +27,7 @@ import { emit, on, TEvent } from "../modules/event"
 import input from "../modules/input"
 import { timer } from "../modules/scheduler"
 import { pull } from "../modules/utils"
-import { getCurrentData } from "./notes"
+import { getCurrentData, stopNotes } from "./notes"
 import { v2rotate } from "../modules/math/vec2"
 import { rnd } from "../modules/math"
 import { setSpeed } from "../modules/entity/components/body"
@@ -35,7 +37,7 @@ const buttons = () => getChildren(container())
 const button = (i: number) => buttons()[i]
 const pool: TEntity[][] = [[], [], [], []]
 
-function createButton(id: string, tint: number[], x: number) {
+function createButton(id: string, text: string, tint: number[], x: number) {
     return createEntity([
         id,
         {
@@ -47,9 +49,12 @@ function createButton(id: string, tint: number[], x: number) {
             [
                 "up",
                 {
-                    t: [[16, 16]],
-                    s: ["btn", 32, 32, 0, 1]
-                }
+                    t: [[16, 16]]
+                },
+                [
+                    [, { x: [FONT_REGULAR, text, 1, 1], t: [,[16, 16]], c: COLOR_BLACK }],
+                    [, { s: ["btn", 32, 32, 0, 1] }],
+                ]
             ],
             [
                 "bg",
@@ -118,21 +123,20 @@ async function setButton(index: number, down: boolean) {
 function onUpDown([key, event]: TEvent<string>) {
     const down = event !== "up"
     switch (key) {
-        case "KeyF":
         case "Digit1":
             setButton(0, down)
             break
-        case "KeyG":
         case "Digit2":
             setButton(1, down)
             break
-        case "KeyH":
         case "Digit3":
             setButton(2, down)
             break
-        case "KeyJ":
         case "Digit4":
             setButton(3, down)
+            break
+        case "Escape":
+            down || stopNotes()
             break
     }
 }
@@ -145,10 +149,10 @@ function onPointer() {
 }
 
 export function initButtons() {
-    addEntity(createButton("1", DARK_RED, 0), container())
-    addEntity(createButton("2", DARK_YELLOW, 34), container())
-    addEntity(createButton("4", DARK_CYAN, 68), container())
-    addEntity(createButton("8", DARK_PURPLE, 102), container())
+    addEntity(createButton("1", "1", DARK_RED, 0), container())
+    addEntity(createButton("2", "2", DARK_YELLOW, 34), container())
+    addEntity(createButton("4", "3", DARK_CYAN, 68), container())
+    addEntity(createButton("8", "4", DARK_PURPLE, 102), container())
     on("up,down", onUpDown)
     on("pointer", onPointer)
 }
