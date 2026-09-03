@@ -57,6 +57,7 @@ function onEnding() {
 }
 
 function onEnd() {
+    updateSpeed(0)
     setAlpha(bg(), 0.3)
 }
 

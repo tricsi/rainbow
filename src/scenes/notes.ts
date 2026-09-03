@@ -115,22 +115,22 @@ export function playNotes(restart: boolean = false) {
     emit(restart ? "restart" : "start")
 }
 
-export async function stopNotes(pause: boolean = false) {
+export async function stopNotes(force: boolean = false) {
     if (music) {
         const copy = music
         music = null
-        if (!pause) {
+        if (!force) {
             emit("ending")
             await timer(1, (t) => mixer("music", 1 - t))
-            emit("end")
-            currentTime = 0
         }
+        emit("end")
+        currentTime = 0
         copy?.stop()
     }
 }
 
 function onVisibilityChange() {
-    DOC.hidden ? stopNotes(true) : playNotes(true)
+    DOC.hidden && stopNotes(true)
 }
 
 export function initNotes() {
