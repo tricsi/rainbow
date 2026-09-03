@@ -32,7 +32,7 @@ const DPR = devicePixelRatio
 
 let GL: WebGL2RenderingContext,
     PRG: WebGLProgram,
-    RES: number[],
+    RES: Float32Array,
     COUNT: number = 0,
     DATA: TSpritesheet
 
@@ -42,7 +42,7 @@ export function createContext(
     onLoad: () => void
 ) {
     GL = canvas.getContext("webgl2") as WebGL2RenderingContext
-    RES = [canvas.width, canvas.height]
+    RES =  new Float32Array([canvas.width, canvas.height])
     PRG = createProgram(
         GL,
         compileShader(GL, GL.VERTEX_SHADER, VERTEX_SHADER),
@@ -67,7 +67,7 @@ export function createContext(
 }
 
 export function renderContext(clear = true) {
-    setUniform(GL, PRG, "uRes", new Float32Array([GL.canvas.width, GL.canvas.height]))
+    setUniform(GL, PRG, "uRes",RES)
     setUniform(GL, PRG, "uProj", PROJ as Float32Array)
     bindBuffer(GL, "aUv", UV)
     setAttribute(GL, PRG, "aUv", 2)
