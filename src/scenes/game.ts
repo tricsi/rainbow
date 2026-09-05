@@ -10,7 +10,7 @@ import { setAlpha } from "../modules/entity/components/color";
 
 const map: [TSprite, string, number, number] = [
     SPRITE_FRAME,
-    "a0b9|a0" + Array(15).fill("c0 9|c0").join("") + "-a0-b9+a0",
+    "a0b9|a0d0b9|d0" + Array(14).fill("c0 9|c0").join("") + "-a0-b9+a0",
     12,
     17
 ]
@@ -21,7 +21,8 @@ const gamePrefab: TEntityProps = [
     [
         ["btn", { t: [, [-51, 109]] }],
         ["frame", { t: [, [-72, -75]], m: map, c: DARK_GREY }],
-        ["mask", { p: [[-72, 109, 144, 18]], c: COLOR_BLACK }],
+        ["top", { p: [[-72, -128, 144, 65]], c: COLOR_BLACK }],
+        ["bottom", { p: [[-72, 109, 144, 18]], c: COLOR_BLACK }],
         ["sheet", { t: [, [-51, 110]] }],
         ["bg", { t: [, [-72, -110]], c: [1, 1, 1, 0.3] }]
     ]

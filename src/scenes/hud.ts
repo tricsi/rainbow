@@ -22,7 +22,7 @@ import { kill, schedule, timer, TTimerToken, unschedule } from "../modules/sched
 import { getCurrentData } from "./notes"
 import { saveScore, scorePrefab, updateScore } from "./score"
 
-const levels = [0, 2500, 10000]
+const levels = [0, 10000, 25000, 40000]
 const idleToken: TTimerToken = [1]
 
 let level = 0
@@ -41,36 +41,32 @@ const hudPrefab: TEntityProps = [
     [
         [
             "logo",
-            { t: [, [72, 83], 2], x: [FONT_REGULAR, "Sleepy on\n\nRoad", 1] },
-            "Rainbow"
-                .split("")
-                .map((c, i) => [
-                    c,
-                    { t: [, [i * 6 - 21, 8]], x: [FONT_REGULAR, c], c: COLOR_RAINBOW[i] }
-                ])
+            { t: [[32, 20], [72, 120], 1.5], s: ["logo", 63, 39] },
+            [
+                ["l", { t: [, [-12, -8]], s: ["bg", 43, 52, 1] }],
+                ["r", { t: [, [74, -8], [-1, 1]], s: ["bg", 43, 52, 1] }]
+            ]
         ],
         [
             "uni",
             {
-                t: [
-                    [55, 0],
-                    [144, 1]
-                ],
+                t: [[55, 0], [144, 0]],
                 s: ["uni", 55, 54],
-                a: [[[0], [1], [2, 3, 4, 3]], 10],
+                a: [[[0], [1], [2], [2, 3, 4, 3]], 10],
                 c: COLOR_TRANSPARENT
             }
         ],
-        ["score", { x: [FONT_REGULAR, , 0, 0], t: [, [2, 44], 1], c: LIGHT_YELLOW }],
-        ["multi", { x: [FONT_REGULAR, , 2, 0], t: [, [86, 44], 1], c: LIGHT_CYAN }],
+        ["streak", { x: [FONT_REGULAR, , 1, 0], t: [, [26, 57], 1], c: LIGHT_CYAN }],
+        ["score", { x: [FONT_REGULAR, , 1, 0], t: [, [72, 57], 1], c: LIGHT_YELLOW }],
+        ["multi", { x: [FONT_REGULAR, , 1, 0], t: [, [118, 57], 1], c: LIGHT_CYAN }],
         scorePrefab,
-        ["tap", { x: [FONT_REGULAR, ID_PRESS, 1, 1], t: [, [72, 205], 1] }],
-        ["bg", { p: [[0, 0, 144, 54]], c: COLOR_BLACK }]
+        ["tap", { x: [FONT_REGULAR, ID_PRESS, 1, 1], t: [, [72, 208], 1] }]
     ]
 ]
 
-const multiText = () => getEntity("hud/multi")!
+const streakText = () => getEntity("hud/streak")!
 const scoreText = () => getEntity("hud/score")!
+const multiText = () => getEntity("hud/multi")!
 const tapText = () => getEntity("hud/tap")!
 const unicorn = () => getEntity("hud/uni")!
 const table = () => getEntity("hud/table")!
@@ -122,8 +118,9 @@ function update(delta: number) {
     if (counter === activeIdx && performance.now() - counterStart > 200) {
         scoreValue += delta * multiValue * 5
     }
-    setText(multiText(), String(streakValue).padStart(3, "0") + ID_MULTI + multiValue)
+    setText(streakText(), String(round(streakValue)).padStart(3, "0"))
     setText(scoreText(), ID_SCORE + String(round(scoreValue)).padStart(5, "0"))
+    setText(multiText(), ID_MULTI + multiValue)
     const newLevel = levels.reduce(
         (value, score, index) => (score > scoreValue ? value : index),
         level
@@ -168,12 +165,13 @@ export async function introHud() {
     await timer(0.5, (t) => {
         const tt = 1 - t ** 4
         setAlpha(tapText(), 1 - t)
-        setAlpha(multiText(), t)
+        setAlpha(streakText(), t)
         setAlpha(scoreText(), t)
+        setAlpha(multiText(), t)
         setAlpha(unicorn(), t)
         setAlpha(table(), t)
-        setPosition(logo(), 45 + tt * 27, 3 + tt * 80)
-        setScale(logo(), 1.6 + tt * 0.4)
+        setPosition(logo(), 46 + tt * 26, 30 + tt * 90)
+        setScale(logo(), 1 + tt * 0.5)
     })
     on("start", onStart)
     on("end", onEnd)
@@ -185,8 +183,9 @@ export async function introHud() {
 
 export function initHud() {
     addEntity(createEntity(hudPrefab))
-    setAlpha(multiText(), 0)
+    setAlpha(streakText(), 0)
     setAlpha(scoreText(), 0)
+    setAlpha(multiText(), 0)
     updateScore()
     update(0)
 }

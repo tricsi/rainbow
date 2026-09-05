@@ -25,7 +25,7 @@ function update() {
             setAlpha(child, scale)
             setScale(child, scale)
             setFrame(child, irnd(8))
-            setPosition(child, x, y - 220)
+            setPosition(child, x, y - 200)
         }
     }
 }
@@ -71,7 +71,7 @@ export function initBg() {
         const entity = createEntity([
             ,
             {
-                t: [[4.5, 4.5], [x, irnd(256)], scale],
+                t: [[4.5, 4.5], [x, 45 + irnd(190)], scale],
                 s: ["ico", 9, 9, 0, irnd(8)],
                 b: [],
                 c: COLOR_RAINBOW[c]

@@ -5,7 +5,7 @@ import { createSprite, drawSprite, TSprite } from "./context"
 /** [Font, Text, LetterSpace, LineGap, Align, Baseline] */
 export type TText = [TSprite, string?, number?, number?, number?, number?]
 
-const ABC = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ,.:!?"
+const ABC = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ,.:!?*"
 const MAT = m3()
 const VEC = [0, 0]
 

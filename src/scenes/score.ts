@@ -17,10 +17,10 @@ import { storage } from "../modules/utils"
 
 export const scorePrefab: TEntityProps = [
     "table",
-    { x: [FONT_REGULAR, ID_TABLE, 1, 0], t: [, [72, 70]], c: COLOR_TRANSPARENT },
+    { x: [FONT_REGULAR, ID_TABLE, 1, 0], t: [, [72, 80]], c: COLOR_TRANSPARENT },
     SCORE_TABLE.map((_, y) => [
         "id",
-        { t: [, [-20, y * 10 + 20]], x: [FONT_REGULAR, , 2] },
+        { t: [, [-20, y * 10 + 18]], x: [FONT_REGULAR, , 2] },
         [
             [
                 "st",

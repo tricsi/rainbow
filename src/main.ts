@@ -13,7 +13,6 @@ import { traverse, WORLD } from "./modules/entity/entity"
 import { schedule, update } from "./modules/scheduler"
 import { $ } from "./modules/utils"
 import { initLoad } from "./scenes/loader"
-import { initGame } from "./scenes/game";
 
 schedule((delta) => {
     traverse(
